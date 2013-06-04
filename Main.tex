@@ -67,16 +67,13 @@ The standard series to be investigated can take the form of
 \begin{equation}
 y_t = TD_t + z_t
 \end{equation}
-$y_t$ is the series to be considered, $TD_t$ is the \emph{deterministic trend} where $TD_t = \beta_0 +\beta_1 t$ and $\z_t$ is a \emph{stochastic component} with $\Phi(L)z_t = \Theta(L)\varepsilon_t$.  
-If the auto-regressive compoents sum to more than zero (or the roots of the ploynominal lie inside the unit circle) the series is explosive and difficult to analyse; if the components sum to lesss than zero (or the roots lie outside the unit circle) the series tends to return to a constant level (there is a stationary mean); if any of the roots lie on the unit circle (and the others are outside) the series has a unit root. A series with a unit root could be a random walk. 
-\begin{equation}
-y_t = y_{t-1} + \varepsilon
-\end{equation}
-where 
-\begin{equation*}
-\varepsilon \sim N(0, \sigma^2)
-\end{equation*}
-It is possible to differentiate between \emph{trend stationary} and \emph{difference stationary} processes. 
+
+
+%$y_t$ is the series to be considered, $TD_t$ is a \emph{deterministic trend} with $TD_t = \beta_0 +\beta_1 t$ and $\z_t$ is a \emph{stochastic component} with $\phi(L)z_t = \theta(L)\varepsilon_t$.  
+
+It is possible to differentiate between \emph{trend stationary} and \emph{difference stationary} processes.  
+
+
 \begin{equation}
 y_t = y_{t-1} + \mu = y_0 + \mu t
 \end{equation}
@@ -84,6 +81,14 @@ and
 \begin{equation}
 y_t = y_{t-1} + \varepsilon = y_0 + \sum_{i=0}^t \varepsilon_t
 \end{equation}
+
+
+If all the roots of the autoregressive polynominal $\phi_p(z)$ lie outside the unit circle and there is a trend stationary process; if at least one of the roots lies on the unit circule and there is a difference statonary process. 
+
+\begin{equation}
+\phi_p(z) = 1 - \phi_1 (z) - \phi_2(z)^2 - \phi_3(z)^3..\phi_p(z)^p
+\end{equation}
+ 
 It is possible to create and plot these different types of time series. 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -125,6 +130,36 @@ dt <- e + 0.5 * trd
 
 \end{knitrout}
 
+There are also a series of tests that can be put in place to assess the nature of the time series.  There are three types of stationary series: \emph{trend stationary}, \emph{difference stationary} and \emph{difference stationary with a constant}
+
+The following equation can be estimated with \emph{Information Criteria} used to assess the appropriate lags of the dependent variable to introduce to remove any serial correlation in the residuals. 
+\begin{equation}
+\Delta y_t = \beta_1 + \beta_2 t + \pi y_{t-1} +\sum_{j=1}^k \gamma_j \Delta y_i + u_{1t}
+\end{equation}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{library}(urca)
+\hlfunctioncall{library}(xtable)
+\hlfunctioncall{data}(Raotbl3)
+\hlfunctioncall{attach}(Raotbl3)
+lc <- \hlfunctioncall{ts}(lc, start = \hlfunctioncall{c}(1966, 4), end = \hlfunctioncall{c}(1991, 2), frequency = 4)
+lc.ct <- \hlfunctioncall{ur.df}(lc, lags = 3, type = \hlstring{"trend"})
+\hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(lc.ct)))
+\end{alltt}
+
+
+{\ttfamily\noindent\bfseries\color{errorcolor}{\#\# Error: no applicable method for 'xtable' applied to an object of class "sumurca"}}\end{kframe}
+\end{knitrout}
+
+
+%lc.co <- ur.df(lc, lags=3, type='drift')
+%lc2 <- diff(lc)
+%lc2.ct <- ur.df(lc2, type='trend', lags=3)
+%@
+
+
 
 
 \section{Cointegration}
@@ -163,7 +198,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Fri May 31 12:35:13 2013
+% Tue Jun 04 21:47:54 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}

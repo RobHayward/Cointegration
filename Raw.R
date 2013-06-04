@@ -1,3 +1,4 @@
+# 5.1-------------
 set.seed(123456)
 e <- rnorm(500)
 # pure random walk
@@ -16,5 +17,17 @@ par(new=T)
 plot.ts(rw.nd, lty=3, axes=FALSE)
 axis(4, pretty(range(rw.nd)))
 lines(rw.nd, lty=3)
-legend(10, 18.7, legend=c('det. trend + noise (ls)', 'rw drift (ls)', 'rw (rs)'), lty=c(1, 2, 3))
+legend(10, 18.7, legend=c('det. trend + noise (ls)', 
+                          'rw drift (ls)', 'rw (rs)'), lty=c(1, 2, 3))
+
+#DW---------------------
+library(urca)
+library(xtable)
+data(Raotbl3)
+attach(Raotbl3)
+lc <- ts(lc, start=c(1966,4), end=c(1991,2), frequency=4)
+lc.ct <- ur.df(lc, lags=3, type='trend')
+slotNames(lc.ct)
+lc.ct@teststat
+
 
