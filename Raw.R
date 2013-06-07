@@ -27,7 +27,13 @@ data(Raotbl3)
 attach(Raotbl3)
 lc <- ts(lc, start=c(1966,4), end=c(1991,2), frequency=4)
 lc.ct <- ur.df(lc, lags=3, type='trend')
+# Slotnames will determine the names for elements in the table. 
 slotNames(lc.ct)
-lc.ct@teststat
-
+class(lc.ct@teststat)
+class(lc.ct@cval)
+# Put the test-statistics and the critical values together
+a <- cbind(t(lc.ct@teststat), lc.ct@cval)
+ta <- xtable(a, digits = 2)
+ta
+summary(lc.ct)
 

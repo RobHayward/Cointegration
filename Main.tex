@@ -55,6 +55,7 @@
 
 \usepackage{alltt}
 \usepackage{amsmath}
+\usepackage{natbib}
 \title{Cointegration}
 \author{Rob Hayward}
 \begin{document}
@@ -144,7 +145,7 @@ to test whether $\rho$ is equal to unity, $y_{t-1}$ is taken from each side to p
 \end{equation}
 where $\pi$ is equal to $1 - \rho$ and therefore if $\pi$ is significantly different from zero, $\rho$ cannot be one and there is no unit root. 
 
-\emph{Information Criteria} used to assess the appropriate lags of the dependent variable to introduce to remove any serial correlation in the residuals. 
+Lags of the dependent variable are used to remove any serial correlation in the residuals. \emph{Information Criteria} and t-statistics can be used to assess the appropriate number of lags
 
 Using the usca package and the ur.df function on UK real consumer spending data (lc). Set up the data as a timeseries.   
 \begin{knitrout}
@@ -170,14 +171,16 @@ lc2.ct <- \hlfunctioncall{ur.df}(lc2, type = \hlstring{"trend"}, lags = 3)
 \end{kframe}
 \end{knitrout}
 
-The three different equations are tested by 'trend', 'drift' or 'none' and there are two tests that take place. The first tests whether $\pi$ is equal to zero.  The test is the usual t-value on the lagged dependent variable.  Critical values have been provided by Dickey and Fuller.  There is also an F-test of the coefficient on the 
+The three different equations are tested by 'trend', 'drift' or 'none' and there are two tests that take place. 
+
+The first $(\tau_3)$ tests whether $\pi$ is equal to zero.  The test is the usual t-value on the lagged dependent variable. This can seen in the summary() function or the SlotName "teststat".  The critical values for the test statistics are in the slotName "cval".  The following code extracts the relevant values and puts them into a table. 
 \begin{kframe}
 \begin{alltt}
 a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 06 16:22:44 2013
+% Fri Jun 07 15:24:40 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -194,6 +197,12 @@ tau3 & -2.24 & -4.04 & -3.45 & -3.15 \\
 
 
 
+The $\tau_3$ test statistic is the test of the null hypothesis that the coefficient on the difference of the lagged dependent variable is equal to zero and that there is a \emph{unit root} as $\rho$ is equal to one.  
+
+
+The critical value for a sample size of 100 comes from \citep{Fuller1976}. 
+
+An F-test of the null hypothesis that the coefficients on the lagged change in the dependend variable and the coefficient on the time trend are jointly equal to zero is also supplied $(\phi_3)$.  The critical values come from Table VI \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (\alpha, 0, 1)$.  It seems that unit root and lack of time trend cannot be rejected. A joint test of the null that the coefficients on the drift, time trend and lagged difference of the dependent variable is suppoed in $(\phi_2)$.  The critical values come from Table V \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (0, 0, 1)$.
 
 
 \section{Cointegration}
@@ -232,7 +241,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 06 16:22:45 2013
+% Fri Jun 07 15:24:41 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -262,4 +271,9 @@ sr.dw
 \end{knitrout}
 
 The statistic will be around 2 if there is no autocorrelation. 
+\newpage
+\bibliography{myref}
+\bibliographystyle{agsm}
+
+
 \end{document}

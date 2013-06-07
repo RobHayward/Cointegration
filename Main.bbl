@@ -1,0 +1,12 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Dickey \harvardand\ Fuller}{1981}{DF1981}
+Dickey, D. \harvardand\ Fuller, W.  \harvardyearleft 1981\harvardyearright ,
+  `Likelihood ratio statistics for autoregressive time series with a unit
+  root', {\em Econometrica} {\bf 49},~1057 -- 1072.
+
+\harvarditem{Fuller}{1976}{Fuller1976}
+Fuller, W.  \harvardyearleft 1976\harvardyearright , {\em Introducton to
+  Statistical Time Series}, John Wiley and Sons, New York.
+
+\end{thebibliography}
