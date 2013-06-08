@@ -9,4 +9,12 @@ Dickey, D. \harvardand\ Fuller, W.  \harvardyearleft 1981\harvardyearright ,
 Fuller, W.  \harvardyearleft 1976\harvardyearright , {\em Introducton to
   Statistical Time Series}, John Wiley and Sons, New York.
 
+\harvarditem[Kwiatkowski et~al.]{Kwiatkowski, Phillips, Schmidt \harvardand\
+  Shin}{1992}{KPSS}
+Kwiatkowski, D., Phillips, P. C.~B., Schmidt, P. \harvardand\ Shin, Y.
+  \harvardyearleft 1992\harvardyearright , `Testing the null hypothesis of
+  stationarity against the alternative of a unit root: How sure are we that
+  economic time series have a unit root?', {\em Journal of Econometrics} {\bf
+  54},~159 -- 178.
+
 \end{thebibliography}

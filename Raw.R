@@ -36,4 +36,4 @@ a <- cbind(t(lc.ct@teststat), lc.ct@cval)
 ta <- xtable(a, digits = 2)
 ta
 summary(lc.ct)
-
+lc.ct@teststat

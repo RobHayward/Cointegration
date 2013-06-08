@@ -14,11 +14,7 @@ The standard series to be investigated can take the form of
 y_t = TD_t + z_t
 \end{equation}
 
-
-%$y_t$ is the series to be considered, $TD_t$ is a \emph{deterministic trend} with $TD_t = \beta_0 +\beta_1 t$ and $\z_t$ is a \emph{stochastic component} with $\phi(L)z_t = \theta(L)\varepsilon_t$.  
-
 It is possible to differentiate between \emph{trend stationary} and \emph{difference stationary} processes.  
-
 
 \begin{equation}
 y_t = y_{t-1} + \mu = y_0 + \mu t
@@ -29,7 +25,7 @@ y_t = y_{t-1} + \varepsilon = y_0 + \sum_{i=0}^t \varepsilon_t
 \end{equation}
 
 
-If all the roots of the autoregressive polynominal $\phi_p(z)$ lie outside the unit circle and there is a trend stationary process; if at least one of the roots lies on the unit circule and there is a difference statonary process. 
+If all the roots of the autoregressive polynominal $\phi_p(z)$ lie outside the unit circle, there is a trend stationary process; if at least one of the roots lies on the unit circule and there is a difference statonary process. 
 
 \begin{equation}
 \phi_p(z) = 1 - \phi_1 (z) - \phi_2(z)^2 - \phi_3(z)^3..\phi_p(z)^p
@@ -71,11 +67,13 @@ to test whether $\rho$ is equal to unity, $y_{t-1}$ is taken from each side to p
 \Delta y_t = \beta_1 + \beta_2 t + \pi y_{t-1} +\sum_{j=1}^k \gamma_j \Delta y_i + u_{1t}
 \label{eq:df}
 \end{equation}
+
 where $\pi$ is equal to $1 - \rho$ and therefore if $\pi$ is significantly different from zero, $\rho$ cannot be one and there is no unit root. 
 
 Lags of the dependent variable are used to remove any serial correlation in the residuals. \emph{Information Criteria} and t-statistics can be used to assess the appropriate number of lags
 
 Using the usca package and the ur.df function on UK real consumer spending data (lc). Set up the data as a timeseries.   
+
 <<DF>>=
 library(urca)
 library(xtable)
@@ -104,6 +102,31 @@ The critical value for a sample size of 100 comes from \citep{Fuller1976}.
 
 An F-test of the null hypothesis that the coefficients on the lagged change in the dependend variable and the coefficient on the time trend are jointly equal to zero is also supplied $(\phi_3)$.  The critical values come from Table VI \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (\alpha, 0, 1)$.  It seems that unit root and lack of time trend cannot be rejected. A joint test of the null that the coefficients on the drift, time trend and lagged difference of the dependent variable is suppoed in $(\phi_2)$.  The critical values come from Table V \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (0, 0, 1)$.
 
+There are a number of other tests of a unit root in the Bernhard Pfaff text.  However, these all test the null of a unit root.  The \emph{Kwiatkowski-Phillips-Schmidt-Shin Test} \citep{KPSS} tests the null stationarity.  This is a much more powerful test and can be used in conjunction with the more conventional tests.  If the other tests suggest a unit root but the KPSS rejects a unit root, it is probably best to consider the data as stationary. 
+
+The KPSS test is of the form
+\begin{equation}
+\label{eq:KPSS}
+y_t = \zeta t + r_t + \varepsilon_t
+\end{equation}
+
+\begin{equation}
+r_t = r_{t-1} + u_t
+\end{equation}
+
+The test statistic is calculated by running the regression of $y$ on a constant and trend as in equation \ref{eq:KPSS} or on just a constant as in equation \ref{eq:KPSS} with $\zeta$ equal to zero.    
+
+\begin{equation}
+LM = \frac{\sum_{i = 1}^T S_t^2}{\hat{\sigma_t^2}}
+\end{equation}
+where 
+\begin{equation}
+S_t = \sum_{i = 1}^t \hat{\varepsilon} , t = 1, 2,...T
+\end{equation}
+and the estimate of the error variance
+\begin{equation}
+\hat{\sigma_{\varepsilon}}^2 = s^2 (l) = T^{-1} \sum{t=1}^T +2T - 1 \sum{s=1}^l 1-\frac{s}{l+1} \sum_{t=s+1}^T \hat{\varepsilon} \hat{\varepsilon_{t-1}}
+\end{equation}
 
 \section{Cointegration}
 This is the overview of conintegration and the methods use to analyse conintegrated relationships. Non-stationary data may exhibit \emph{spurious regression}.  If two norman random variables are created (e1 and e2) and two series (y1 and y2) have a trend plus a random shock. 
