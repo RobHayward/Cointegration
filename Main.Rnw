@@ -6,45 +6,56 @@
 \begin{document}
 \maketitle
 \section{Introduction}
-This paper will examine time series with a focus on stationarity, integration and cointegration. The first part looks at univariate series, the second looks at multivariate and the final section assesses conintegration.  The final section concludes.  
+This paper will examine time series with a focus on stationarity, integration and cointegration. The first part discusses tests for stationarity, the second looks at cointegration and the methods used to identify cointegrated series. 
 
 \section{Stationary data}
-The standard series to be investigated can take the form of 
+A standard series to be investigated can take the form of 
 \begin{equation}
 y_t = TD_t + z_t
 \end{equation}
 
-It is possible to differentiate between \emph{trend stationary} and \emph{difference stationary} processes.  
+Where $y_t$ is the series of attention, $TD_t$ is the deterministic component that takes the form of $TD_t = \beta_0 + \beta_1 t$ and $z_t$ is the stochastic part that is assumed to be an autoregressive-moving average process of the form $\Phi L(z_t) = \theta L(z_t) \varepsilon_t$,  with $\varepsilon_t \sim iid$. 
+
+It is possible to differentiate between \emph{trend stationary} 
 
 \begin{equation}
 y_t = y_{t-1} + \mu = y_0 + \mu t
 \end{equation}
-and
+
+and \emph{difference stationary} processes.  
+
 \begin{equation}
 y_t = y_{t-1} + \varepsilon = y_0 + \sum_{i=0}^t \varepsilon_t
 \end{equation}
 
-
-If all the roots of the autoregressive polynominal $\phi_p(z)$ lie outside the unit circle, there is a trend stationary process; if at least one of the roots lies on the unit circule and there is a difference statonary process. 
+If all the roots of the autoregressive polynominal $\phi_p(z)$ lie outside the unit circle, the process is stationary (possibly trend stationary); if at least one of the roots lies on the unit circle and there is a unit root and then the process is difference statonary. 
 
 \begin{equation}
-\phi_p(z) = 1 - \phi_1 (z) - \phi_2(z)^2 - \phi_3(z)^3..\phi_p(z)^p
+\phi_p(z) = 1 - \phi_1 (z) - \phi_2(z)^2 - \phi_3(z)^3...\phi_p(z)^p
 \end{equation}
  
-It is possible to create and plot these different types of time series. 
+It is possible to create and plot these different types of time series.  
 <<ur >>=
 set.seed(123456)
 e <- rnorm(500)
 rw.nd <- cumsum(e)
 @
+After setting the seed and generating 500 norman random variables $(e)$. 
 <<rwwd>>=
 trd <- 1:500
-# random walk with drift
+@
+The \emph{random walk} $(rw.nd)$ is the cumulation $(cumsum(e))$ of the normal random variable.
+<<rw>>=
 rw.wd <- 0.5*trd + cumsum(e)
-# deterministic trend and noise
+@
+By creating a trend $(trd)$ a \emph{random walk with drift} can be established with a combination of the cumulative shock and a constant drift $(rw.wd)$.
+<<dt>>=
 dt <- e + 0.5*trd
 @
-<<plotting>>=
+A \emph{deterministic trend with noise} $(dt)$ combines the tend $(trd)$ with noise $(e)$.
+
+Now plot the three series. 
+<<plotting, fig.height=6, fig.width=6, fig.cap="Three Series", fig.pos="h">>=
 par(mar=rep(5,4))
 plot.ts(dt, lty=1, ylab='', xlab='')
 lines(rw.wd, lty=2)
@@ -55,20 +66,23 @@ lines(rw.nd, lty=3)
 legend(10, 18.7, legend=c('det. trend + noise (ls)', 
                           'rw drift (ls)', 'rw (rs)'), lty=c(1, 2, 3))
 @
-There are also a series of tests that can be put in place to assess the nature of the time series.  There are three types of stationary series: \emph{trend stationary}, \emph{difference stationary} and \emph{difference stationary with a constant}
+There are also a series of tests that can be used to determine the nature of the time series.  There are three types of statonary series to be identified:  \emph{trend stationary}, \emph{difference stationary} and \emph{difference stationary with drift}.
 
-Rather than estimating  
+\subsection{Dickey-Fuller Tests}
+
+Equation \ref{eq:gen} can be used to estimate all three types of series. 
 \begin{equation}
+\label{eq:gen}
 y_t = \beta_1 + \beta_2 t + \rho y_{t-1} +\sum_{j=1}^k \gamma_j \Delta y_i + u_{1t}
 \end{equation}
-to test whether $\rho$ is equal to unity, $y_{t-1}$ is taken from each side to produce. 
+However, rather than testing the unit root as $\rho$ being equal to unity, it is more usual to take $y_{t-1}$ is taken from each side to produce the following adaption of Equation \ref{eq:gen}. 
 
 \begin{equation}
 \Delta y_t = \beta_1 + \beta_2 t + \pi y_{t-1} +\sum_{j=1}^k \gamma_j \Delta y_i + u_{1t}
 \label{eq:df}
 \end{equation}
 
-where $\pi$ is equal to $1 - \rho$ and therefore if $\pi$ is significantly different from zero, $\rho$ cannot be one and there is no unit root. 
+where $\pi = 1 - \rho$ and therefore if $\pi$ is significantly different from zero, $\rho$ cannot be one and there is no unit root. 
 
 Lags of the dependent variable are used to remove any serial correlation in the residuals. \emph{Information Criteria} and t-statistics can be used to assess the appropriate number of lags
 
@@ -80,7 +94,10 @@ library(xtable)
 data(Raotbl3)
 lc <- ts(Raotbl3$lc, start=c(1966,4), end=c(1991,2), frequency=4)
 @
-Test the trend (lc.ct), drift (lc.co) and first difference (lc2.ct). 
+<<plotlc, echo=FALSE, fig.cap="Log UK Consumer Spending", fig.pos="h">>=
+plot.ts(lc, main = "UK Real Consumer Spending", ylab = "")
+@
+Conduct the Augmented Dickey-Fuller test on (lc.ct), drift (lc.co) and first difference (lc2.ct) using three lags. 
 <<DF1>>=
 lc.ct <- ur.df(lc, lags=3, type='trend')
 lc.co <- ur.df(lc, lags=3, type='drift')
@@ -92,7 +109,7 @@ The three different equations are tested by 'trend', 'drift' or 'none' and there
 The first $(\tau_3)$ tests whether $\pi$ is equal to zero.  The test is the usual t-value on the lagged dependent variable. This can seen in the summary() function or the SlotName "teststat".  The critical values for the test statistics are in the slotName "cval".  The following code extracts the relevant values and puts them into a table. 
 <<table, results='asis'>>=
 a <- cbind(t(lc.ct@teststat), lc.ct@cval)
-print(xtable(a, digits = 2))
+print(xtable(a, digits = 2, caption = "DW and F-tests"))
 @
 
 The $\tau_3$ test statistic is the test of the null hypothesis that the coefficient on the difference of the lagged dependent variable is equal to zero and that there is a \emph{unit root} as $\rho$ is equal to one.  
@@ -102,6 +119,7 @@ The critical value for a sample size of 100 comes from \citep{Fuller1976}.
 
 An F-test of the null hypothesis that the coefficients on the lagged change in the dependend variable and the coefficient on the time trend are jointly equal to zero is also supplied $(\phi_3)$.  The critical values come from Table VI \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (\alpha, 0, 1)$.  It seems that unit root and lack of time trend cannot be rejected. A joint test of the null that the coefficients on the drift, time trend and lagged difference of the dependent variable is suppoed in $(\phi_2)$.  The critical values come from Table V \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (0, 0, 1)$.
 
+\subsection{KPSS}
 There are a number of other tests of a unit root in the Bernhard Pfaff text.  However, these all test the null of a unit root.  The \emph{Kwiatkowski-Phillips-Schmidt-Shin Test} \citep{KPSS} tests the null stationarity.  This is a much more powerful test and can be used in conjunction with the more conventional tests.  If the other tests suggest a unit root but the KPSS rejects a unit root, it is probably best to consider the data as stationary. 
 
 The KPSS test is of the form
@@ -114,7 +132,7 @@ y_t = \zeta t + r_t + \varepsilon_t
 r_t = r_{t-1} + u_t
 \end{equation}
 
-The test statistic is calculated by running the regression of $y$ on a constant and trend as in equation \ref{eq:KPSS} or on just a constant as in equation \ref{eq:KPSS} with $\zeta$ equal to zero.    
+The test statistic is calculated by running the regression of $y$ on a constant and trend as in Equation \ref{eq:KPSS} or on just a constant as in equation \ref{eq:KPSS} with $\zeta$ equal to zero.    
 
 \begin{equation}
 LM = \frac{\sum_{i = 1}^T S_t^2}{\hat{\sigma_t^2}}
@@ -125,8 +143,37 @@ S_t = \sum_{i = 1}^t \hat{\varepsilon} , t = 1, 2,...T
 \end{equation}
 and the estimate of the error variance
 \begin{equation}
-\hat{\sigma_{\varepsilon}}^2 = s^2 (l) = T^{-1} \sum{t=1}^T +2T - 1 \sum{s=1}^l 1-\frac{s}{l+1} \sum_{t=s+1}^T \hat{\varepsilon} \hat{\varepsilon_{t-1}}
+\hat{\sigma_{\varepsilon}}^2 = s^2 (l) = T^{-1} \sum_{t=1}^T \varepsilon_t^2 +2T - 1 \sum_{s=1}^l 1-\frac{s}{l+1} \sum_{t=s+1}^T \hat{\varepsilon} \hat{\varepsilon}_{t-1}
 \end{equation}
+
+Using the urca package and the data for US interest rates and nominal wages, the KPSS test is either on level statonary (type = $\mu$) or trend stationary (type = $\tau$) and the lags for the error term are either specified (as below) or set to "short" $\root 4 \of {4 \times (n/100)}$ or "long" $\root 4 \of {12 \times (n/100)}$.
+<<KPSS-data>>=
+data(nporg)
+ir <- na.omit(nporg[, "bnd"])
+wg <- log(na.omit(nporg[, "wg.n"]))
+@
+Plot the data
+<<plot-kpss, fig.cap="US interest rate and wage data", fig.pos="h">>=
+par(mfrow=c(2,1))
+plot.ts(ir, main = "US interest rates")
+plot.ts(wg, main = "US nominal wages")
+@
+
+<<kpss-test>>=
+ir.kpss <- ur.kpss(ir, type = "mu", use.lag=8)
+wg.kpss <- ur.kpss(wg, type = "tau", use.lag=8)
+@
+And the appropriate data can be extracted and placed into a table using the following. 
+<<kpss-table, results='asis'>>=
+a <- cbind(ir.kpss@teststat, ir.kpss@cval)
+b <- cbind(wg.kpss@teststat, wg.kpss@cval)
+ab <- rbind(a, b)
+colnames(ab) <- c("CV", "10pct", "5pct", "2.5pct", "1.0pct")
+rownames(ab) <- c("ir", "wg")
+print(xtable(ab, digits = 2, caption = "KPSS and critical values"))
+@
+This shows that the null hypothesis of level stationarity for the interest rate series and trend stationarity for the wage series cannnot be rejected.  
+
 
 \section{Cointegration}
 This is the overview of conintegration and the methods use to analyse conintegrated relationships. Non-stationary data may exhibit \emph{spurious regression}.  If two norman random variables are created (e1 and e2) and two series (y1 and y2) have a trend plus a random shock. 

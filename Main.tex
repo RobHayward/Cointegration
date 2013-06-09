@@ -61,32 +61,35 @@
 \begin{document}
 \maketitle
 \section{Introduction}
-This paper will examine time series with a focus on stationarity, integration and cointegration. The first part looks at univariate series, the second looks at multivariate and the final section assesses conintegration.  The final section concludes.  
+This paper will examine time series with a focus on stationarity, integration and cointegration. The first part discusses tests for stationarity, the second looks at cointegration and the methods used to identify cointegrated series. 
 
 \section{Stationary data}
-The standard series to be investigated can take the form of 
+A standard series to be investigated can take the form of 
 \begin{equation}
 y_t = TD_t + z_t
 \end{equation}
 
-It is possible to differentiate between \emph{trend stationary} and \emph{difference stationary} processes.  
+Where $y_t$ is the series of attention, $TD_t$ is the deterministic component that takes the form of $TD_t = \beta_0 + \beta_1 t$ and $z_t$ is the stochastic part that is assumed to be an autoregressive-moving average process of the form $\Phi L(z_t) = \theta L(z_t) \varepsilon_t$,  with $\varepsilon_t \sim iid$. 
+
+It is possible to differentiate between \emph{trend stationary} 
 
 \begin{equation}
 y_t = y_{t-1} + \mu = y_0 + \mu t
 \end{equation}
-and
+
+and \emph{difference stationary} processes.  
+
 \begin{equation}
 y_t = y_{t-1} + \varepsilon = y_0 + \sum_{i=0}^t \varepsilon_t
 \end{equation}
 
-
-If all the roots of the autoregressive polynominal $\phi_p(z)$ lie outside the unit circle, there is a trend stationary process; if at least one of the roots lies on the unit circule and there is a difference statonary process. 
+If all the roots of the autoregressive polynominal $\phi_p(z)$ lie outside the unit circle, the process is stationary (possibly trend stationary); if at least one of the roots lies on the unit circle and there is a unit root and then the process is difference statonary. 
 
 \begin{equation}
-\phi_p(z) = 1 - \phi_1 (z) - \phi_2(z)^2 - \phi_3(z)^3..\phi_p(z)^p
+\phi_p(z) = 1 - \phi_1 (z) - \phi_2(z)^2 - \phi_3(z)^3...\phi_p(z)^p
 \end{equation}
  
-It is possible to create and plot these different types of time series. 
+It is possible to create and plot these different types of time series.  
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -97,18 +100,36 @@ rw.nd <- \hlfunctioncall{cumsum}(e)
 \end{kframe}
 \end{knitrout}
 
+After setting the seed and generating 500 norman random variables $(e)$. 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 trd <- 1:500
-\hlcomment{# random walk with drift}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+The \emph{random walk} $(rw.nd)$ is the cumulation $(cumsum(e))$ of the normal random variable.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
 rw.wd <- 0.5 * trd + \hlfunctioncall{cumsum}(e)
-\hlcomment{# deterministic trend and noise}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+By creating a trend $(trd)$ a \emph{random walk with drift} can be established with a combination of the cumulative shock and a constant drift $(rw.wd)$.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
 dt <- e + 0.5 * trd
 \end{alltt}
 \end{kframe}
 \end{knitrout}
 
+A \emph{deterministic trend with noise} $(dt)$ combines the tend $(trd)$ with noise $(e)$.
+
+Now plot the three series. 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -122,25 +143,31 @@ dt <- e + 0.5 * trd
 \hlfunctioncall{legend}(10, 18.7, legend = \hlfunctioncall{c}(\hlstring{"det. trend + \hlfunctioncall{noise} (ls)"}, \hlstring{"rw \hlfunctioncall{drift} (ls)"}, \hlstring{"\hlfunctioncall{rw} (rs)"}), 
     lty = \hlfunctioncall{c}(1, 2, 3))
 \end{alltt}
-\end{kframe}
-\includegraphics[width=\maxwidth]{figure/plotting} 
+\end{kframe}\begin{figure}[h]
+
+\includegraphics[width=\maxwidth]{figure/plotting} \caption[Three Series]{Three Series\label{fig:plotting}}
+\end{figure}
+
 
 \end{knitrout}
 
-There are also a series of tests that can be put in place to assess the nature of the time series.  There are three types of stationary series: \emph{trend stationary}, \emph{difference stationary} and \emph{difference stationary with a constant}
+There are also a series of tests that can be used to determine the nature of the time series.  There are three types of statonary series to be identified:  \emph{trend stationary}, \emph{difference stationary} and \emph{difference stationary with drift}.
 
-Rather than estimating  
+\subsection{Dickey-Fuller Tests}
+
+Equation \ref{eq:gen} can be used to estimate all three types of series. 
 \begin{equation}
+\label{eq:gen}
 y_t = \beta_1 + \beta_2 t + \rho y_{t-1} +\sum_{j=1}^k \gamma_j \Delta y_i + u_{1t}
 \end{equation}
-to test whether $\rho$ is equal to unity, $y_{t-1}$ is taken from each side to produce. 
+However, rather than testing the unit root as $\rho$ being equal to unity, it is more usual to take $y_{t-1}$ is taken from each side to produce the following adaption of Equation \ref{eq:gen}. 
 
 \begin{equation}
 \Delta y_t = \beta_1 + \beta_2 t + \pi y_{t-1} +\sum_{j=1}^k \gamma_j \Delta y_i + u_{1t}
 \label{eq:df}
 \end{equation}
 
-where $\pi$ is equal to $1 - \rho$ and therefore if $\pi$ is significantly different from zero, $\rho$ cannot be one and there is no unit root. 
+where $\pi = 1 - \rho$ and therefore if $\pi$ is significantly different from zero, $\rho$ cannot be one and there is no unit root. 
 
 Lags of the dependent variable are used to remove any serial correlation in the residuals. \emph{Information Criteria} and t-statistics can be used to assess the appropriate number of lags
 
@@ -157,7 +184,16 @@ lc <- \hlfunctioncall{ts}(Raotbl3$lc, start = \hlfunctioncall{c}(1966, 4), end =
 \end{kframe}
 \end{knitrout}
 
-Test the trend (lc.ct), drift (lc.co) and first difference (lc2.ct). 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[h]
+
+\includegraphics[width=\maxwidth]{figure/plotlc} \caption[Log UK Consumer Spending]{Log UK Consumer Spending\label{fig:plotlc}}
+\end{figure}
+
+
+\end{knitrout}
+
+Conduct the Augmented Dickey-Fuller test on (lc.ct), drift (lc.co) and first difference (lc2.ct) using three lags. 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -175,10 +211,10 @@ The first $(\tau_3)$ tests whether $\pi$ is equal to zero.  The test is the usua
 \begin{kframe}
 \begin{alltt}
 a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
-\hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2))
+\hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 08 17:34:40 2013
+% Sun Jun 09 09:47:55 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -190,6 +226,7 @@ tau3 & -2.24 & -4.04 & -3.45 & -3.15 \\
   phi3 & 2.60 & 8.73 & 6.49 & 5.47 \\ 
    \hline
 \end{tabular}
+\caption{DW and F-tests}
 \end{center}
 \end{table}
 
@@ -202,6 +239,7 @@ The critical value for a sample size of 100 comes from \citep{Fuller1976}.
 
 An F-test of the null hypothesis that the coefficients on the lagged change in the dependend variable and the coefficient on the time trend are jointly equal to zero is also supplied $(\phi_3)$.  The critical values come from Table VI \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (\alpha, 0, 1)$.  It seems that unit root and lack of time trend cannot be rejected. A joint test of the null that the coefficients on the drift, time trend and lagged difference of the dependent variable is suppoed in $(\phi_2)$.  The critical values come from Table V \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (0, 0, 1)$.
 
+\subsection{KPSS}
 There are a number of other tests of a unit root in the Bernhard Pfaff text.  However, these all test the null of a unit root.  The \emph{Kwiatkowski-Phillips-Schmidt-Shin Test} \citep{KPSS} tests the null stationarity.  This is a much more powerful test and can be used in conjunction with the more conventional tests.  If the other tests suggest a unit root but the KPSS rejects a unit root, it is probably best to consider the data as stationary. 
 
 The KPSS test is of the form
@@ -214,7 +252,7 @@ y_t = \zeta t + r_t + \varepsilon_t
 r_t = r_{t-1} + u_t
 \end{equation}
 
-The test statistic is calculated by running the regression of $y$ on a constant and trend as in equation \ref{eq:KPSS} or on just a constant as in equation \ref{eq:KPSS} with $\zeta$ equal to zero.    
+The test statistic is calculated by running the regression of $y$ on a constant and trend as in Equation \ref{eq:KPSS} or on just a constant as in equation \ref{eq:KPSS} with $\zeta$ equal to zero.    
 
 \begin{equation}
 LM = \frac{\sum_{i = 1}^T S_t^2}{\hat{\sigma_t^2}}
@@ -225,8 +263,75 @@ S_t = \sum_{i = 1}^t \hat{\varepsilon} , t = 1, 2,...T
 \end{equation}
 and the estimate of the error variance
 \begin{equation}
-\hat{\sigma_{\varepsilon}}^2 = s^2 (l) = T^{-1} \sum{t=1}^T +2T - 1 \sum{s=1}^l 1-\frac{s}{l+1} \sum_{t=s+1}^T \hat{\varepsilon} \hat{\varepsilon_{t-1}}
+\hat{\sigma_{\varepsilon}}^2 = s^2 (l) = T^{-1} \sum_{t=1}^T \varepsilon_t^2 +2T - 1 \sum_{s=1}^l 1-\frac{s}{l+1} \sum_{t=s+1}^T \hat{\varepsilon} \hat{\varepsilon}_{t-1}
 \end{equation}
+
+Using the urca package and the data for US interest rates and nominal wages, the KPSS test is either on level statonary (type = $\mu$) or trend stationary (type = $\tau$) and the lags for the error term are either specified (as below) or set to "short" $\root 4 \of {4 \times (n/100)}$ or "long" $\root 4 \of {12 \times (n/100)}$.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{data}(nporg)
+ir <- \hlfunctioncall{na.omit}(nporg[, \hlstring{"bnd"}])
+wg <- \hlfunctioncall{log}(\hlfunctioncall{na.omit}(nporg[, \hlstring{"wg.n"}]))
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Plot the data
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{par}(mfrow = \hlfunctioncall{c}(2, 1))
+\hlfunctioncall{plot.ts}(ir, main = \hlstring{"US interest rates"})
+\hlfunctioncall{plot.ts}(wg, main = \hlstring{"US nominal wages"})
+\end{alltt}
+\end{kframe}\begin{figure}[h]
+
+\includegraphics[width=\maxwidth]{figure/plot-kpss} \caption[US interest rate and wage data]{US interest rate and wage data\label{fig:plot-kpss}}
+\end{figure}
+
+
+\end{knitrout}
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+ir.kpss <- \hlfunctioncall{ur.kpss}(ir, type = \hlstring{"mu"}, use.lag = 8)
+wg.kpss <- \hlfunctioncall{ur.kpss}(wg, type = \hlstring{"tau"}, use.lag = 8)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+And the appropriate data can be extracted and placed into a table using the following. 
+\begin{kframe}
+\begin{alltt}
+a <- \hlfunctioncall{cbind}(ir.kpss@teststat, ir.kpss@cval)
+b <- \hlfunctioncall{cbind}(wg.kpss@teststat, wg.kpss@cval)
+ab <- \hlfunctioncall{rbind}(a, b)
+\hlfunctioncall{colnames}(ab) <- \hlfunctioncall{c}(\hlstring{"CV"}, \hlstring{"10pct"}, \hlstring{"5pct"}, \hlstring{"2.5pct"}, \hlstring{"1.0pct"})
+\hlfunctioncall{rownames}(ab) <- \hlfunctioncall{c}(\hlstring{"ir"}, \hlstring{"wg"})
+\hlfunctioncall{print}(\hlfunctioncall{xtable}(ab, digits = 2, caption = \hlstring{"KPSS and critical values"}))
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jun 09 09:47:55 2013
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrrrrr}
+  \hline
+ & CV & 10pct & 5pct & 2.5pct & 1.0pct \\ 
+  \hline
+ir & 0.13 & 0.35 & 0.46 & 0.57 & 0.74 \\ 
+  wg & 0.10 & 0.12 & 0.15 & 0.18 & 0.22 \\ 
+   \hline
+\end{tabular}
+\caption{KPSS and critical values}
+\end{center}
+\end{table}
+
+
+This shows that the null hypothesis of level stationarity for the interest rate series and trend stationarity for the wage series cannnot be rejected.  
+
 
 \section{Cointegration}
 This is the overview of conintegration and the methods use to analyse conintegrated relationships. Non-stationary data may exhibit \emph{spurious regression}.  If two norman random variables are created (e1 and e2) and two series (y1 and y2) have a trend plus a random shock. 
@@ -264,7 +369,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 08 17:34:40 2013
+% Sun Jun 09 09:47:56 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
