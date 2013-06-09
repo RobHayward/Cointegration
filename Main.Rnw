@@ -97,12 +97,10 @@ lc <- ts(Raotbl3$lc, start=c(1966,4), end=c(1991,2), frequency=4)
 <<plotlc, echo=FALSE, fig.cap="Log UK Consumer Spending", fig.pos="h">>=
 plot.ts(lc, main = "UK Real Consumer Spending", ylab = "")
 @
-Conduct the Augmented Dickey-Fuller test on (lc.ct), drift (lc.co) and first difference (lc2.ct) using three lags. 
+Conduct the Augmented Dickey-Fuller test on (lc.ct) trend and (lc.co) drift using three lags. 
 <<DF1>>=
 lc.ct <- ur.df(lc, lags=3, type='trend')
 lc.co <- ur.df(lc, lags=3, type='drift')
-lc2 <- diff(lc)
-lc2.ct <- ur.df(lc2, type='trend', lags=3)
 @
 The three different equations are tested by 'trend', 'drift' or 'none' and there are two tests that take place. 
 
@@ -119,8 +117,27 @@ The critical value for a sample size of 100 comes from \citep{Fuller1976}.
 
 An F-test of the null hypothesis that the coefficients on the lagged change in the dependend variable and the coefficient on the time trend are jointly equal to zero is also supplied $(\phi_3)$.  The critical values come from Table VI \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (\alpha, 0, 1)$.  It seems that unit root and lack of time trend cannot be rejected. A joint test of the null that the coefficients on the drift, time trend and lagged difference of the dependent variable is suppoed in $(\phi_2)$.  The critical values come from Table V \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (0, 0, 1)$.
 
+As the consumption series does not appear to be trend stationary, a test without the trend can be carried out.  This is equivalent to setting $\beta_2$ in Equation \ref{eq:gen} to zero. lc.co is the test of the series with drift.  
+<<table2, results='asis'>>=
+a <- cbind(t(lc.co@teststat), lc.co@cval)
+print(xtable(a, digits = 2, caption = "DW and F-tests 2"))
+@
+The critical value of 2.88 $(\phi_1)$ is a test of the null that the coefficients on the drift and lagged difference of the dependend variable are jointly equal to zero.  This cannot be rejected.  Therefore, it seems that the log of UK consumer spending is a random walk.  
+
+To complete the picture, the change in consumer spending is tested to maker sure that the series are I(1) rather than I(2). First create the difference series lc2.ct.  
+<<Diff>>=
+lc2 <- diff(lc)
+lc2.ct <- ur.df(lc2, type='trend', lags=3)
+@
+
+<<table3, results='asis'>>=
+a <- cbind(t(lc2.ct@teststat), lc2.ct@cval)
+print(xtable(a, digits = 2, caption = "DW and F-tests 3"))
+@
+This shows that the null of a unit root can be rejected and indicates that the UK consumer spending data are difference stationary.  
+
 \subsection{KPSS}
-There are a number of other tests of a unit root in the Bernhard Pfaff text.  However, these all test the null of a unit root.  The \emph{Kwiatkowski-Phillips-Schmidt-Shin Test} \citep{KPSS} tests the null stationarity.  This is a much more powerful test and can be used in conjunction with the more conventional tests.  If the other tests suggest a unit root but the KPSS rejects a unit root, it is probably best to consider the data as stationary. 
+There are a number of other tests of a unit root in the Bernhard Pfaff text (pages 94 to 102).  These include the \emph{Phillips-Peron}, \emph{Elliot-Rothenberg-Stock} and \emph{Schmidt-Phillips} tests which are implemented by ur.pp, ur.ers and ur.sp respectively in the urca package.  However, these all test the null of a unit root.  The \emph{Kwiatkowski-Phillips-Schmidt-Shin Test} \citep{KPSS} tests the null stationarity.  This is a much more powerful test and can be used in conjunction with the more conventional tests.  If the other tests suggest a unit root but the KPSS rejects a unit root, it is probably best to consider the data as stationary. 
 
 The KPSS test is of the form
 \begin{equation}

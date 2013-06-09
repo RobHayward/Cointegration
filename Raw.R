@@ -37,3 +37,31 @@ ta <- xtable(a, digits = 2)
 ta
 summary(lc.ct)
 lc.ct@teststat
+lc2 <- diff(lc)
+lc2.ct <- ur.df(lc2, type = "trend", lags = 3)
+summary(lc2.ct)
+# De-trend--------------------
+# Testing the de-trend code on note 1 page 53 Pfaff
+detrended <- residuals(lm(lc ~ seq(along = lc)))
+plot(detrended, type = 'l', main = "De-trended series")
+# KPSS-----------
+library(urca)
+data(nporg)
+ir <- na.omit(nporg[, "bnd"])
+wg <- log(na.omit(nporg[, "wg.n"]))
+ir.kpss <- ur.kpss(ir, type = "mu", use.lag=8)
+wg.kpss <- ur.kpss(wg, type = "tau", use.lag=8)
+summary(ir.kpss)
+summary(wg.kpss)
+slotNames(ir.kpss)
+ir.kpss@cval
+a <- cbind(ir.kpss@teststat, ir.kpss@cval)
+b <- cbind(wg.kpss@teststat, wg.kpss@cval)
+ab <- rbind(a, b)
+colnames(ab) <- c("cv", "10pct", "5pct", "2.5pct", "1.0pct")
+rownames(ab) <- c("ir", "wg")
+print(xtable(ab, digits = 2))
+# print---------
+par(mfrow=c(2,1))
+plot.ts(ir, main = "US interest rates")
+plot.ts(wg, main = "US nominal wages")

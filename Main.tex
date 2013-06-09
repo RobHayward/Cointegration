@@ -193,14 +193,12 @@ lc <- \hlfunctioncall{ts}(Raotbl3$lc, start = \hlfunctioncall{c}(1966, 4), end =
 
 \end{knitrout}
 
-Conduct the Augmented Dickey-Fuller test on (lc.ct), drift (lc.co) and first difference (lc2.ct) using three lags. 
+Conduct the Augmented Dickey-Fuller test on (lc.ct) trend and (lc.co) drift using three lags. 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 lc.ct <- \hlfunctioncall{ur.df}(lc, lags = 3, type = \hlstring{"trend"})
 lc.co <- \hlfunctioncall{ur.df}(lc, lags = 3, type = \hlstring{"drift"})
-lc2 <- \hlfunctioncall{diff}(lc)
-lc2.ct <- \hlfunctioncall{ur.df}(lc2, type = \hlstring{"trend"}, lags = 3)
 \end{alltt}
 \end{kframe}
 \end{knitrout}
@@ -214,7 +212,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 09:47:55 2013
+% Sun Jun 09 16:25:47 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -239,8 +237,69 @@ The critical value for a sample size of 100 comes from \citep{Fuller1976}.
 
 An F-test of the null hypothesis that the coefficients on the lagged change in the dependend variable and the coefficient on the time trend are jointly equal to zero is also supplied $(\phi_3)$.  The critical values come from Table VI \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (\alpha, 0, 1)$.  It seems that unit root and lack of time trend cannot be rejected. A joint test of the null that the coefficients on the drift, time trend and lagged difference of the dependent variable is suppoed in $(\phi_2)$.  The critical values come from Table V \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (0, 0, 1)$.
 
+As the consumption series does not appear to be trend stationary, a test without the trend can be carried out.  This is equivalent to setting $\beta_2$ in Equation \ref{eq:gen} to zero. lc.co is the test of the series with drift.  
+\begin{kframe}
+\begin{alltt}
+a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.co@teststat), lc.co@cval)
+\hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 2"}))
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jun 09 16:25:47 2013
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrrrr}
+  \hline
+ & statistic & 1pct & 5pct & 10pct \\ 
+  \hline
+tau2 & -0.09 & -3.51 & -2.89 & -2.58 \\ 
+  phi1 & 2.88 & 6.70 & 4.71 & 3.86 \\ 
+   \hline
+\end{tabular}
+\caption{DW and F-tests 2}
+\end{center}
+\end{table}
+
+
+The critical value of 2.88 $(\phi_1)$ is a test of the null that the coefficients on the drift and lagged difference of the dependend variable are jointly equal to zero.  This cannot be rejected.  Therefore, it seems that the log of UK consumer spending is a random walk.  
+
+To complete the picture, the change in consumer spending is tested to maker sure that the series are I(1) rather than I(2). First create the difference series lc2.ct.  
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+lc2 <- \hlfunctioncall{diff}(lc)
+lc2.ct <- \hlfunctioncall{ur.df}(lc2, type = \hlstring{"trend"}, lags = 3)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+\begin{kframe}
+\begin{alltt}
+a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc2.ct@teststat), lc2.ct@cval)
+\hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 3"}))
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jun 09 16:25:47 2013
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrrrr}
+  \hline
+ & statistic & 1pct & 5pct & 10pct \\ 
+  \hline
+tau3 & -4.39 & -4.04 & -3.45 & -3.15 \\ 
+  phi2 & 6.45 & 6.50 & 4.88 & 4.16 \\ 
+  phi3 & 9.62 & 8.73 & 6.49 & 5.47 \\ 
+   \hline
+\end{tabular}
+\caption{DW and F-tests 3}
+\end{center}
+\end{table}
+
+
+This shows that the null of a unit root can be rejected and indicates that the UK consumer spending data are difference stationary.  
+
 \subsection{KPSS}
-There are a number of other tests of a unit root in the Bernhard Pfaff text.  However, these all test the null of a unit root.  The \emph{Kwiatkowski-Phillips-Schmidt-Shin Test} \citep{KPSS} tests the null stationarity.  This is a much more powerful test and can be used in conjunction with the more conventional tests.  If the other tests suggest a unit root but the KPSS rejects a unit root, it is probably best to consider the data as stationary. 
+There are a number of other tests of a unit root in the Bernhard Pfaff text (pages 94 to 102).  These include the \emph{Phillips-Peron}, \emph{Elliot-Rothenberg-Stock} and \emph{Schmidt-Phillips} tests which are implemented by ur.pp, ur.ers and ur.sp respectively in the urca package.  However, these all test the null of a unit root.  The \emph{Kwiatkowski-Phillips-Schmidt-Shin Test} \citep{KPSS} tests the null stationarity.  This is a much more powerful test and can be used in conjunction with the more conventional tests.  If the other tests suggest a unit root but the KPSS rejects a unit root, it is probably best to consider the data as stationary. 
 
 The KPSS test is of the form
 \begin{equation}
@@ -314,7 +373,7 @@ ab <- \hlfunctioncall{rbind}(a, b)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(ab, digits = 2, caption = \hlstring{"KPSS and critical values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 09:47:55 2013
+% Sun Jun 09 16:25:47 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrr}
@@ -369,7 +428,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 09:47:56 2013
+% Sun Jun 09 16:25:48 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
