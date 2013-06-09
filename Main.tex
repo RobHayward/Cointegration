@@ -177,6 +177,10 @@ Using the usca package and the ur.df function on UK real consumer spending data 
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlfunctioncall{library}(urca)
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'urca' was built under R version 2.15.3}}\begin{alltt}
 \hlfunctioncall{library}(xtable)
 \hlfunctioncall{data}(Raotbl3)
 lc <- \hlfunctioncall{ts}(Raotbl3$lc, start = \hlfunctioncall{c}(1966, 4), end = \hlfunctioncall{c}(1991, 2), frequency = 4)
@@ -212,7 +216,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 16:25:47 2013
+% Sun Jun 09 21:29:32 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -244,7 +248,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.co@teststat), lc.co@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 2"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 16:25:47 2013
+% Sun Jun 09 21:29:32 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -279,7 +283,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc2.ct@teststat), lc2.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 3"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 16:25:47 2013
+% Sun Jun 09 21:29:32 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -373,7 +377,7 @@ ab <- \hlfunctioncall{rbind}(a, b)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(ab, digits = 2, caption = \hlstring{"KPSS and critical values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 16:25:47 2013
+% Sun Jun 09 21:29:33 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrr}
@@ -390,6 +394,30 @@ ir & 0.13 & 0.35 & 0.46 & 0.57 & 0.74 \\
 
 
 This shows that the null hypothesis of level stationarity for the interest rate series and trend stationarity for the wage series cannnot be rejected.  
+
+\subsection{Dealing with lack of stationarity}
+If the data are trend-stationary, one way to deal with the lack of stationarity would be to remove the trend.  One method is described in the footnote on page 53 of Pfaff. This takes the residuals from a regression of a series that is the same length as the log of consumption.   
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+detrended <- \hlfunctioncall{residuals}(\hlfunctioncall{lm}(lc ~ \hlfunctioncall{seq}(along = lc)))
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Which takes the following form. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{plot}(detrended, type = \hlstring{"l"}, main = \hlstring{"De-trended series"})
+\end{alltt}
+\end{kframe}\begin{figure}[h]
+
+\includegraphics[width=\maxwidth]{figure/Plot-Detrend} \caption[Detrended Plot]{Detrended Plot\label{fig:Plot-Detrend}}
+\end{figure}
+
+
+\end{knitrout}
 
 
 \section{Cointegration}
@@ -425,10 +453,10 @@ Run a regression of $y1$ on $y2$ and it appears that there is a strong relations
 \begin{kframe}
 \begin{alltt}
 sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
-\hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg))
+\hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg, caption = \hlstring{"Regresson results"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 16:25:48 2013
+% Sun Jun 09 21:29:33 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -439,6 +467,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
   y2 & 1.4408 & 0.0075 & 191.62 & 0.0000 \\ 
    \hline
 \end{tabular}
+\caption{Regresson results}
 \end{center}
 \end{table}
 
@@ -457,7 +486,96 @@ sr.dw
 \end{kframe}
 \end{knitrout}
 
-The statistic will be around 2 if there is no autocorrelation. 
+The statistic will be around 2 if there is no autocorrelation. As a general rule, there are groups for suspicion if the $R^2$ is larger that the Durbin-Watson statistic. 
+The main idea of cointegration is that a combnation of one or more non-stationary variables will show a stationary relationship.  One way to look at this is to use the \emph{Engle-Granger} method. For an example of this, create two non-stationary series $(y1)$ and $(y2)$ with a long-run relationship  
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{set.seed}(123456)
+e1 <- \hlfunctioncall{rnorm}(100)
+e2 <- \hlfunctioncall{rnorm}(100)
+y1 <- \hlfunctioncall{cumsum}(e1)
+y2 <- 0.6 * y1 + e2
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Plot these series.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{plot}(y1, type = \hlstring{"l"}, col = \hlstring{"red"}, main = \hlstring{"Plot y1 and y2"})
+\hlfunctioncall{lines}(y2, col = \hlstring{"blue"})
+\end{alltt}
+\end{kframe}\begin{figure}[]
+
+\includegraphics[width=\maxwidth]{figure/Plot-EG} \caption[Plot y1 and y2]{Plot y1 and y2\label{fig:Plot-EG}}
+\end{figure}
+
+
+\end{knitrout}
+
+Now run the regression on the series and save the residuals from that regression
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+lr.reg <- \hlfunctioncall{lm}(y2 ~ y1)
+error <- \hlfunctioncall{residuals}(lr.reg)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+The residual show the divergence from the long run relationship between y1 and y2. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{plot}(error, type = \hlstring{"l"}, main = \hlstring{"Divergence from long-run y1-y2 relationship"})
+\end{alltt}
+\end{kframe}\begin{figure}[]
+
+\includegraphics[width=\maxwidth]{figure/Plot-EG2} \caption[Plot Error]{Plot Error\label{fig:Plot-EG2}}
+\end{figure}
+
+
+\end{knitrout}
+
+Now create the lagged error term and differences in y1 and y2 to allow each variable to respond to the deviation from the long-run relationship.  
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+error.lagged <- error[-\hlfunctioncall{c}(1, 100)]
+dy1 <- \hlfunctioncall{diff}(y1)
+dy2 <- \hlfunctioncall{diff}(y2)
+diff.dat <- \hlfunctioncall{data.frame}(\hlfunctioncall{embed}(\hlfunctioncall{cbind}(dy1, dy2), 2))
+\hlfunctioncall{colnames}(diff.dat) <- \hlfunctioncall{c}(\hlstring{"dy1"}, \hlstring{"dy2"}, \hlstring{"dy1.1"}, \hlstring{"dy2.1"})
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{kframe}
+\begin{alltt}
+ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.dat)
+\hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(ecm.reg)))
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Sun Jun 09 21:29:34 2013
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
+  \hline
+(Intercept) & 0.0034 & 0.1036 & 0.03 & 0.9739 \\ 
+  error.lagged & -0.9688 & 0.1586 & -6.11 & 0.0000 \\ 
+  dy1.1 & 0.2456 & 0.1270 & 1.93 & 0.0561 \\ 
+  dy2.1 & -0.0901 & 0.1059 & -0.85 & 0.3971 \\ 
+   \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+
+The
 \newpage
 \bibliography{myref}
 \bibliographystyle{agsm}

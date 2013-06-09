@@ -191,6 +191,15 @@ print(xtable(ab, digits = 2, caption = "KPSS and critical values"))
 @
 This shows that the null hypothesis of level stationarity for the interest rate series and trend stationarity for the wage series cannnot be rejected.  
 
+\subsection{Dealing with lack of stationarity}
+If the data are trend-stationary, one way to deal with the lack of stationarity would be to remove the trend.  One method is described in the footnote on page 53 of Pfaff. This takes the residuals from a regression of a series that is the same length as the log of consumption.   
+<<Detrend>>=
+detrended <- residuals(lm(lc ~ seq(along = lc)))
+@
+Which takes the following form. 
+<<Plot-Detrend, fig.pos="h", fig.cap="Detrended Plot">>=
+plot(detrended, type = 'l', main = "De-trended series")
+@
 
 \section{Cointegration}
 This is the overview of conintegration and the methods use to analyse conintegrated relationships. Non-stationary data may exhibit \emph{spurious regression}.  If two norman random variables are created (e1 and e2) and two series (y1 and y2) have a trend plus a random shock. 
@@ -205,7 +214,7 @@ y1 <- 0.8*trd + cumsum(e1)
 y2 <- 0.6*trd + cumsum(e2)
 @
 Now plot the two series
-<<plot, fig.height=4, fig.width= 6>>=
+<<plot, fig.caption = "Plot of y1 and y2">>=
 plot(y1, type = 'l', main = "Plot of y1 and y2", 
      col = 'red',  ylab = 'y1, y2')
 lines(y2, col = 'blue')
@@ -213,14 +222,49 @@ lines(y2, col = 'blue')
 Run a regression of $y1$ on $y2$ and it appears that there is a strong relationship.  
 <<Regression, results='asis'>>=
 sr.reg <- lm(y1 ~ y2)
-print(xtable(sr.reg))
+print(xtable(sr.reg, caption = "Regresson results"))
 @
 However, the Durbin-Watson statistics shows there is a large amount of auto-correlation in the residuals.  
 <<DW>>=
 sr.dw <- dwtest(sr.reg)$statistic
 sr.dw
 @
-The statistic will be around 2 if there is no autocorrelation. 
+The statistic will be around 2 if there is no autocorrelation. As a general rule, there are groups for suspicion if the $R^2$ is larger that the Durbin-Watson statistic. 
+The main idea of cointegration is that a combnation of one or more non-stationary variables will show a stationary relationship.  One way to look at this is to use the \emph{Engle-Granger} method. For an example of this, create two non-stationary series $(y1)$ and $(y2)$ with a long-run relationship  
+<<EG, echo=TRUE>>=
+set.seed(123456)
+e1 <- rnorm(100)
+e2 <- rnorm(100)
+y1 <- cumsum(e1)
+y2 <- 0.6*y1 + e2
+@
+Plot these series.
+<<Plot-EG, fig.cap="Plot y1 and y2">>=
+plot(y1, type ='l', col = 'red', main = "Plot y1 and y2")
+lines(y2, col = 'blue')
+@
+Now run the regression on the series and save the residuals from that regression
+<<EG2>>=
+lr.reg <- lm(y2 ~ y1)
+error <- residuals(lr.reg)
+@
+The residual show the divergence from the long run relationship between y1 and y2. 
+<<Plot-EG2, fig.cap="Plot Error">>=
+plot(error, type = 'l', main = "Divergence from long-run y1-y2 relationship")
+@
+Now create the lagged error term and differences in y1 and y2 to allow each variable to respond to the deviation from the long-run relationship.  
+<<EG3>>=
+error.lagged <- error[-c(1, 100)]
+dy1 <- diff(y1)
+dy2 <- diff(y2)
+diff.dat <- data.frame(embed(cbind(dy1, dy2), 2))
+colnames(diff.dat) <- c('dy1', 'dy2', 'dy1.1', 'dy2.1')
+@
+<<EG-Reg, results='asis'>>=
+ecm.reg <- lm(dy2 ~ error.lagged + dy1.1 + dy2.1, data=diff.dat)
+print(xtable(summary(ecm.reg)))
+@
+The
 \newpage
 \bibliography{myref}
 \bibliographystyle{agsm}
