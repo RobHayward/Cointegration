@@ -90,3 +90,8 @@ dy2 <- diff(y2)
 diff.dat <- data.frame(embed(cbind(dy1, dy2), 2))
 colnames(diff.dat) <- c('dy1', 'dy2', 'dy1.1', 'dy2.1')
 ecm.reg <- lm(dy2 ~ error.lagged + dy1.1 + dy2.1, data=diff.dat)
+names(ecm.reg)
+# embed----------
+x <- 1:10
+embed(x,2)
+

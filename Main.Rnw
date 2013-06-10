@@ -213,12 +213,15 @@ trd <- 1:500
 y1 <- 0.8*trd + cumsum(e1)
 y2 <- 0.6*trd + cumsum(e2)
 @
-Now plot the two series
+Now plot the two series. 
+
 <<plot, fig.caption = "Plot of y1 and y2">>=
 plot(y1, type = 'l', main = "Plot of y1 and y2", 
-     col = 'red',  ylab = 'y1, y2')
-lines(y2, col = 'blue')
+     lty = 1,  ylab = 'y1, y2')
+lines(y2, lty = 2)
+legend("topleft", legend = c('y1', 'y2'), lty = c(1,2))
 @
+
 Run a regression of $y1$ on $y2$ and it appears that there is a strong relationship.  
 <<Regression, results='asis'>>=
 sr.reg <- lm(y1 ~ y2)
@@ -230,6 +233,7 @@ sr.dw <- dwtest(sr.reg)$statistic
 sr.dw
 @
 The statistic will be around 2 if there is no autocorrelation. As a general rule, there are groups for suspicion if the $R^2$ is larger that the Durbin-Watson statistic. 
+
 The main idea of cointegration is that a combnation of one or more non-stationary variables will show a stationary relationship.  Pfaff provides the following definition. 
 \begin{quotation}
 `` The components of a vector $\mathbf{x_t}$, are said to be cointegrated of order b, d; denoted $x \sim CI(b,d)$ if (a) all components of $x_t$ are I(d) and (b) a vector $\alpha (\neq 0)$ exists so that $z_t = \alpha'x_t \sim I(d - b), b > 0$.  The vector $\alpha$ is called the conintegrating vector.''
@@ -255,8 +259,9 @@ y2 <- 0.6*y1 + e2
 @
 Plot these series.
 <<Plot-EG, fig.cap="Plot y1 and y2">>=
-plot(y1, type ='l', col = 'red', main = "Plot y1 and y2")
-lines(y2, col = 'blue')
+plot(y1, type ='l', lty = 1, main = "Plot y1 and y2")
+lines(y2, lty = 2)
+legend("topleft", legend = c('y1', 'y2'), lty = c(1,2))
 @
 Now run the regression on the long-run relationship and save the residuals from that regression.  The residuals are the deviations from the long run relationship.  
 <<EG2>>=
@@ -281,8 +286,42 @@ print(xtable(summary(ecm.reg), caption = 'Engle-Granger Regression Result'))
 @
 The results show that most of the disturbance from equilibrium is corrected swiftly with the coefficient on the lagged error at 0.97. 
 
+\subsection{Johansen Procedure}
+When there are more than two series there may still be a relationship that creates a stationary, linear combination that can be used in a regresssion.  
 
-
+For example, a simulated series can be created in the following fashion. First create the three series and put them into a dataframe.  
+<<jj>>=
+set.seed(12345)
+e1 <- rnorm(250, 0, 0.5)
+e2 <- rnorm(250, 0, 0.5)
+e3 <- rnorm(250, 0, 0.5)
+u1.ar1 <- arima.sim(model = list(ar = 0.75),
+                    innov = e1, n = 250)
+u2.ar1 <- arima.sim(model = list(ar = 0.3),
+                    innov = e2, n = 250)
+y3 <- cumsum(e3)
+y1 <- 0.8 * y3 + u1.ar1
+y2 <- -0.3 * y3 + u2.ar1
+y.mat <- data.frame(y1, y2, y3)
+@
+Take a look at the series that have been created. 
+<<plot3, fig.cap="Three Simulated Series", fig.pos="h">>=
+plot(y3, main = "Three series", lty = 3, type = 'l')
+lines(y2, lty = 1, type = 'l')
+lines(y1, lty = 2, type = 'l')
+legend("topleft", legend=c('y1', 'y2', 'y3'), 
+       lty = c(1, 2, 3))
+@
+<<vecm>>=
+require(xtable)
+vecm <- ca.jo(y.mat)
+jo.results <- summary(vecm)
+@
+<<table4, results='asis'>>=
+a <- cbind(jo.results@teststat,jo.results@cval)
+colnames(a) <- c("CV", "10pct", "5pct", "1pct")
+print(xtable(a, digits = 2, caption = 'Johansen Test and Critical Values'))
+@
 \newpage
 \bibliography{myref}
 \bibliographystyle{agsm}

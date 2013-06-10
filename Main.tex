@@ -216,7 +216,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 10:35:28 2013
+% Mon Jun 10 21:20:46 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -248,7 +248,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.co@teststat), lc.co@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 2"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 10:35:28 2013
+% Mon Jun 10 21:20:47 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -283,7 +283,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc2.ct@teststat), lc2.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 3"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 10:35:28 2013
+% Mon Jun 10 21:20:47 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -377,7 +377,7 @@ ab <- \hlfunctioncall{rbind}(a, b)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(ab, digits = 2, caption = \hlstring{"KPSS and critical values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 10:35:28 2013
+% Mon Jun 10 21:20:47 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrr}
@@ -437,17 +437,20 @@ y2 <- 0.6 * trd + \hlfunctioncall{cumsum}(e2)
 \end{kframe}
 \end{knitrout}
 
-Now plot the two series
+Now plot the two series. 
+
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlfunctioncall{plot}(y1, type = \hlstring{"l"}, main = \hlstring{"Plot of y1 and y2"}, col = \hlstring{"red"}, ylab = \hlstring{"y1, y2"})
-\hlfunctioncall{lines}(y2, col = \hlstring{"blue"})
+\hlfunctioncall{plot}(y1, type = \hlstring{"l"}, main = \hlstring{"Plot of y1 and y2"}, lty = 1, ylab = \hlstring{"y1, y2"})
+\hlfunctioncall{lines}(y2, lty = 2)
+\hlfunctioncall{legend}(\hlstring{"topleft"}, legend = \hlfunctioncall{c}(\hlstring{"y1"}, \hlstring{"y2"}), lty = \hlfunctioncall{c}(1, 2))
 \end{alltt}
 \end{kframe}
 \includegraphics[width=\maxwidth]{figure/plot} 
 
 \end{knitrout}
+
 
 Run a regression of $y1$ on $y2$ and it appears that there is a strong relationship.  
 \begin{kframe}
@@ -456,7 +459,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg, caption = \hlstring{"Regresson results"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 10:35:29 2013
+% Mon Jun 10 21:20:47 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -487,6 +490,7 @@ sr.dw
 \end{knitrout}
 
 The statistic will be around 2 if there is no autocorrelation. As a general rule, there are groups for suspicion if the $R^2$ is larger that the Durbin-Watson statistic. 
+
 The main idea of cointegration is that a combnation of one or more non-stationary variables will show a stationary relationship.  Pfaff provides the following definition. 
 \begin{quotation}
 `` The components of a vector $\mathbf{x_t}$, are said to be cointegrated of order b, d; denoted $x \sim CI(b,d)$ if (a) all components of $x_t$ are I(d) and (b) a vector $\alpha (\neq 0)$ exists so that $z_t = \alpha'x_t \sim I(d - b), b > 0$.  The vector $\alpha$ is called the conintegrating vector.''
@@ -519,8 +523,9 @@ Plot these series.
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlfunctioncall{plot}(y1, type = \hlstring{"l"}, col = \hlstring{"red"}, main = \hlstring{"Plot y1 and y2"})
-\hlfunctioncall{lines}(y2, col = \hlstring{"blue"})
+\hlfunctioncall{plot}(y1, type = \hlstring{"l"}, lty = 1, main = \hlstring{"Plot y1 and y2"})
+\hlfunctioncall{lines}(y2, lty = 2)
+\hlfunctioncall{legend}(\hlstring{"topleft"}, legend = \hlfunctioncall{c}(\hlstring{"y1"}, \hlstring{"y2"}), lty = \hlfunctioncall{c}(1, 2))
 \end{alltt}
 \end{kframe}\begin{figure}[]
 
@@ -573,7 +578,7 @@ ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.d
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(ecm.reg), caption = \hlstring{"Engle-Granger Regression Result"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 10:35:29 2013
+% Mon Jun 10 21:20:48 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -593,6 +598,76 @@ ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.d
 
 The results show that most of the disturbance from equilibrium is corrected swiftly with the coefficient on the lagged error at 0.97. 
 
+\subsection{Johansen Procedure}
+When there are more than two series there may still be a relationship that creates a stationary, linear combination that can be used in a regresssion.  
+
+For example, a simulated series can be created in the following fashion. First create the three series and put them into a dataframe.  
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{set.seed}(12345)
+e1 <- \hlfunctioncall{rnorm}(250, 0, 0.5)
+e2 <- \hlfunctioncall{rnorm}(250, 0, 0.5)
+e3 <- \hlfunctioncall{rnorm}(250, 0, 0.5)
+u1.ar1 <- \hlfunctioncall{arima.sim}(model = \hlfunctioncall{list}(ar = 0.75), innov = e1, n = 250)
+u2.ar1 <- \hlfunctioncall{arima.sim}(model = \hlfunctioncall{list}(ar = 0.3), innov = e2, n = 250)
+y3 <- \hlfunctioncall{cumsum}(e3)
+y1 <- 0.8 * y3 + u1.ar1
+y2 <- -0.3 * y3 + u2.ar1
+y.mat <- \hlfunctioncall{data.frame}(y1, y2, y3)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+Take a look at the series that have been created. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{plot}(y3, main = \hlstring{"Three series"}, lty = 3, type = \hlstring{"l"})
+\hlfunctioncall{lines}(y2, lty = 1, type = \hlstring{"l"})
+\hlfunctioncall{lines}(y1, lty = 2, type = \hlstring{"l"})
+\hlfunctioncall{legend}(\hlstring{"topleft"}, legend = \hlfunctioncall{c}(\hlstring{"y1"}, \hlstring{"y2"}, \hlstring{"y3"}), lty = \hlfunctioncall{c}(1, 2, 3))
+\end{alltt}
+\end{kframe}\begin{figure}[h]
+
+\includegraphics[width=\maxwidth]{figure/plot3} \caption[Three Simulated Series]{Three Simulated Series\label{fig:plot3}}
+\end{figure}
+
+
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{require}(xtable)
+vecm <- \hlfunctioncall{ca.jo}(y.mat)
+jo.results <- \hlfunctioncall{summary}(vecm)
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{kframe}
+\begin{alltt}
+a <- \hlfunctioncall{cbind}(jo.results@teststat, jo.results@cval)
+\hlfunctioncall{colnames}(a) <- \hlfunctioncall{c}(\hlstring{"CV"}, \hlstring{"10pct"}, \hlstring{"5pct"}, \hlstring{"1pct"})
+\hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"Johansen Test and Critical Values"}))
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Mon Jun 10 21:20:48 2013
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrrrr}
+  \hline
+ & CV & 10pct & 5pct & 1pct \\ 
+  \hline
+r $<$= 2 $|$ & 4.72 & 6.50 & 8.18 & 11.65 \\ 
+  r $<$= 1 $|$ & 41.69 & 12.91 & 14.90 & 19.19 \\ 
+  r = 0  $|$ & 78.17 & 18.90 & 21.07 & 25.75 \\ 
+   \hline
+\end{tabular}
+\caption{Johansen Test and Critical Values}
+\end{center}
+\end{table}
 
 
 \newpage
