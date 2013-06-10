@@ -216,7 +216,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 21:29:32 2013
+% Mon Jun 10 10:35:28 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -248,7 +248,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.co@teststat), lc.co@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 2"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 21:29:32 2013
+% Mon Jun 10 10:35:28 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -283,7 +283,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc2.ct@teststat), lc2.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 3"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 21:29:32 2013
+% Mon Jun 10 10:35:28 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -377,7 +377,7 @@ ab <- \hlfunctioncall{rbind}(a, b)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(ab, digits = 2, caption = \hlstring{"KPSS and critical values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 21:29:33 2013
+% Mon Jun 10 10:35:28 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrr}
@@ -456,7 +456,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg, caption = \hlstring{"Regresson results"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 21:29:33 2013
+% Mon Jun 10 10:35:29 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -487,7 +487,22 @@ sr.dw
 \end{knitrout}
 
 The statistic will be around 2 if there is no autocorrelation. As a general rule, there are groups for suspicion if the $R^2$ is larger that the Durbin-Watson statistic. 
-The main idea of cointegration is that a combnation of one or more non-stationary variables will show a stationary relationship.  One way to look at this is to use the \emph{Engle-Granger} method. For an example of this, create two non-stationary series $(y1)$ and $(y2)$ with a long-run relationship  
+The main idea of cointegration is that a combnation of one or more non-stationary variables will show a stationary relationship.  Pfaff provides the following definition. 
+\begin{quotation}
+`` The components of a vector $\mathbf{x_t}$, are said to be cointegrated of order b, d; denoted $x \sim CI(b,d)$ if (a) all components of $x_t$ are I(d) and (b) a vector $\alpha (\neq 0)$ exists so that $z_t = \alpha'x_t \sim I(d - b), b > 0$.  The vector $\alpha$ is called the conintegrating vector.''
+\end{quotation}
+\citep[p. 75]{varsb}
+
+If two or more non-stationary series are cointegrated, a linear combination of the two may be cointegrated and this combination can be included in the regression.  The aim is to have a system of the form
+\begin{subequations}
+\begin{align}
+\Delta y_t &= \psi_0 + \gamma_1 z_{t-1} + \sum_{i=1}^k \psi_i \Delta x_{t-i} +\sum_{i=1}^k \psi_i \Delta y_{t-i} + \varepsilon_{1, t}\\
+\Delta x_t &= \psi_0 + \gamma_1 z_{t-1} + \sum_{i=1}^k \psi_i \Delta x_{t-i} +\sum_{i=1}^k \psi_i \Delta y_{t-i} + \varepsilon_{2, t}
+\end{align}
+\end{subequations}
+Where $z$ is the cointegrated relationship.  $y$ and $x$ are difference stationary.  One way to estimate this model is to use the two-step \emph{Engle-Granger} method \citep{EG1987}. 
+
+For an example of this, create two non-stationary series $(y1)$ and $(y2)$ with a long-run relationship where $y2$ is equal to 0.6 $y1$.   
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -515,7 +530,7 @@ Plot these series.
 
 \end{knitrout}
 
-Now run the regression on the series and save the residuals from that regression
+Now run the regression on the long-run relationship and save the residuals from that regression.  The residuals are the deviations from the long run relationship.  
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -539,7 +554,7 @@ The residual show the divergence from the long run relationship between y1 and y
 
 \end{knitrout}
 
-Now create the lagged error term and differences in y1 and y2 to allow each variable to respond to the deviation from the long-run relationship.  
+Now create the lagged error term and differences in y1 and y2 to allow each variable to respond to the deviation from the long-run relationship.  The embed() function will created the lagged dataframe.  
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -555,10 +570,10 @@ diff.dat <- \hlfunctioncall{data.frame}(\hlfunctioncall{embed}(\hlfunctioncall{c
 \begin{kframe}
 \begin{alltt}
 ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.dat)
-\hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(ecm.reg)))
+\hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(ecm.reg), caption = \hlstring{"Engle-Granger Regression Result"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sun Jun 09 21:29:34 2013
+% Mon Jun 10 10:35:29 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -571,11 +586,15 @@ ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.d
   dy2.1 & -0.0901 & 0.1059 & -0.85 & 0.3971 \\ 
    \hline
 \end{tabular}
+\caption{Engle-Granger Regression Result}
 \end{center}
 \end{table}
 
 
-The
+The results show that most of the disturbance from equilibrium is corrected swiftly with the coefficient on the lagged error at 0.97. 
+
+
+
 \newpage
 \bibliography{myref}
 \bibliographystyle{agsm}

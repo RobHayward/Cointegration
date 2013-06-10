@@ -230,7 +230,22 @@ sr.dw <- dwtest(sr.reg)$statistic
 sr.dw
 @
 The statistic will be around 2 if there is no autocorrelation. As a general rule, there are groups for suspicion if the $R^2$ is larger that the Durbin-Watson statistic. 
-The main idea of cointegration is that a combnation of one or more non-stationary variables will show a stationary relationship.  One way to look at this is to use the \emph{Engle-Granger} method. For an example of this, create two non-stationary series $(y1)$ and $(y2)$ with a long-run relationship  
+The main idea of cointegration is that a combnation of one or more non-stationary variables will show a stationary relationship.  Pfaff provides the following definition. 
+\begin{quotation}
+`` The components of a vector $\mathbf{x_t}$, are said to be cointegrated of order b, d; denoted $x \sim CI(b,d)$ if (a) all components of $x_t$ are I(d) and (b) a vector $\alpha (\neq 0)$ exists so that $z_t = \alpha'x_t \sim I(d - b), b > 0$.  The vector $\alpha$ is called the conintegrating vector.''
+\end{quotation}
+\citep[p. 75]{varsb}
+
+If two or more non-stationary series are cointegrated, a linear combination of the two may be cointegrated and this combination can be included in the regression.  The aim is to have a system of the form
+\begin{subequations}
+\begin{align}
+\Delta y_t &= \psi_0 + \gamma_1 z_{t-1} + \sum_{i=1}^k \psi_i \Delta x_{t-i} +\sum_{i=1}^k \psi_i \Delta y_{t-i} + \varepsilon_{1, t}\\
+\Delta x_t &= \psi_0 + \gamma_1 z_{t-1} + \sum_{i=1}^k \psi_i \Delta x_{t-i} +\sum_{i=1}^k \psi_i \Delta y_{t-i} + \varepsilon_{2, t}
+\end{align}
+\end{subequations}
+Where $z$ is the cointegrated relationship.  $y$ and $x$ are difference stationary.  One way to estimate this model is to use the two-step \emph{Engle-Granger} method \citep{EG1987}. 
+
+For an example of this, create two non-stationary series $(y1)$ and $(y2)$ with a long-run relationship where $y2$ is equal to 0.6 $y1$.   
 <<EG, echo=TRUE>>=
 set.seed(123456)
 e1 <- rnorm(100)
@@ -243,7 +258,7 @@ Plot these series.
 plot(y1, type ='l', col = 'red', main = "Plot y1 and y2")
 lines(y2, col = 'blue')
 @
-Now run the regression on the series and save the residuals from that regression
+Now run the regression on the long-run relationship and save the residuals from that regression.  The residuals are the deviations from the long run relationship.  
 <<EG2>>=
 lr.reg <- lm(y2 ~ y1)
 error <- residuals(lr.reg)
@@ -252,7 +267,7 @@ The residual show the divergence from the long run relationship between y1 and y
 <<Plot-EG2, fig.cap="Plot Error">>=
 plot(error, type = 'l', main = "Divergence from long-run y1-y2 relationship")
 @
-Now create the lagged error term and differences in y1 and y2 to allow each variable to respond to the deviation from the long-run relationship.  
+Now create the lagged error term and differences in y1 and y2 to allow each variable to respond to the deviation from the long-run relationship.  The embed() function will created the lagged dataframe.  
 <<EG3>>=
 error.lagged <- error[-c(1, 100)]
 dy1 <- diff(y1)
@@ -262,9 +277,12 @@ colnames(diff.dat) <- c('dy1', 'dy2', 'dy1.1', 'dy2.1')
 @
 <<EG-Reg, results='asis'>>=
 ecm.reg <- lm(dy2 ~ error.lagged + dy1.1 + dy2.1, data=diff.dat)
-print(xtable(summary(ecm.reg)))
+print(xtable(summary(ecm.reg), caption = 'Engle-Granger Regression Result'))
 @
-The
+The results show that most of the disturbance from equilibrium is corrected swiftly with the coefficient on the lagged error at 0.97. 
+
+
+
 \newpage
 \bibliography{myref}
 \bibliographystyle{agsm}
