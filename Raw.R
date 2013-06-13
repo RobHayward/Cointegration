@@ -53,45 +53,31 @@ ir.kpss <- ur.kpss(ir, type = "mu", use.lag=8)
 wg.kpss <- ur.kpss(wg, type = "tau", use.lag=8)
 summary(ir.kpss)
 summary(wg.kpss)
-slotNames(ir.kpss)
-ir.kpss@cval
-a <- cbind(ir.kpss@teststat, ir.kpss@cval)
-b <- cbind(wg.kpss@teststat, wg.kpss@cval)
-ab <- rbind(a, b)
-colnames(ab) <- c("cv", "10pct", "5pct", "2.5pct", "1.0pct")
-rownames(ab) <- c("ir", "wg")
-print(xtable(ab, digits = 2))
-# plot---------
-par(mfrow=c(2,1))
-plot.ts(ir, main = "US interest rates")
-plot.ts(wg, main = "US nominal wages")
-#Questions-------------
-library(urca)
-library(xtable)
-data(Raotbl3)
-lc <- ts(Raotbl3$lc, start=c(1966,4), end=c(1991,2), frequency=4)
-lw <- ts(Raotbl3$lw, start=c(1966,4), end=c(1991,2), frequency=4)
-li <- ts(Raotbl3$li, start=c(1966,4), end=c(1991,2), frequency=4)
-plot.ts(li)
-plot.ts(lw)
-li.ct <- ur.df(lw, type='trend', selectlags = "AIC")
-summary(li.ct)
-# Engle-Grange------------------------
-set.seed(123456)
-e1 <- rnorm(100)
-e2 <- rnorm(100)
-y1 <- cumsum(e1)
-y2 <- 0.6*y1 + e2
-lr.reg <- lm(y2 ~ y1)
-error <- residuals(lr.reg)
-error.lagged <- error[-c(1, 100)]
-dy1 <- diff(y1)
-dy2 <- diff(y2)
-diff.dat <- data.frame(embed(cbind(dy1, dy2), 2))
-colnames(diff.dat) <- c('dy1', 'dy2', 'dy1.1', 'dy2.1')
-ecm.reg <- lm(dy2 ~ error.lagged + dy1.1 + dy2.1, data=diff.dat)
-names(ecm.reg)
-# embed----------
-x <- 1:10
-embed(x,2)
+# jj------------
+set.seed(12345)
+e1 <- rnorm(250, 0, 0.5)
+e2 <- rnorm(250, 0, 0.5)
+e3 <- rnorm(250, 0, 0.5)
+u1.ar1 <- arima.sim(model = list(ar = 0.75),
+                    innov = e1, n = 250)
+plot(u1.ar1)
+u2.ar1 <- arima.sim(model = list(ar = 0.3),
+                    innov = e2, n = 250)
+plot(u2.ar1)
+y3 <- cumsum(e3)
+y1 <- 0.8 * y3 + u1.ar1
+y2 <- -0.3 * y3 + u2.ar1
+y.mat <- data.frame(y1, y2, y3)
+vecm <- ca.jo(y.mat)
+class(vecm)
+summary(vecm)
+jo.results <- summary(vecm)
+vecm.r2 <- cajorls(vecm, r = 2)
+vecm.r2
+class(jo.results)
+slotNames(jo.results)
+jo.results@teststat
+require(xtable)
+print(xtable(a <- cbind(jo.results@teststat,jo.results@cval),digits = 2))
 
+(jo.results@teststat)

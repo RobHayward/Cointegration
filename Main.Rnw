@@ -286,6 +286,13 @@ print(xtable(summary(ecm.reg), caption = 'Engle-Granger Regression Result'))
 @
 The results show that most of the disturbance from equilibrium is corrected swiftly with the coefficient on the lagged error at 0.97. 
 
+\subsection{Use of cointegration}
+These cointegration techniques can be used to test whether there is a stable relationship between variables.  For example, one test could be whether cash and futures prices are cointegrated.  A Dickey-Fuller test cannot be made of the residuals of a regression of cash on futures because the process of creating the residuals through the regression will bias the result by selecting parameters that reduce the variability of the estimated errors as much as possible.  Therefore, the Engle-Granger residuals should be used.  These are interpolations from the response surface in \citep{MacKinnon1996}.  These are in Table C \citep[p. 490]{EndersTS}.  
+
+If the tests indicate that the residuals from the regression are stationary, the coefficient from this regression gives the relationship between cash a futures. Similarly, the efficiecy of pairs trades can be assessed with the error-correction model. This also gives an indication of how swiftly the relationship will return to normal after a disturbance. 
+
+This technique could also be used to make a pairs test of two securities.  The cointegration is the relationship between the two and the error correction can show the speed at which the relationship will return to the long run equilibrium.  Alternatively, an analysis of the bond market could use the yield curve (long term and short term interest rates) as a cointegrating factor.  
+
 \subsection{Johansen Procedure}
 When there are more than two series there may still be a relationship that creates a stationary, linear combination that can be used in a regresssion.  
 

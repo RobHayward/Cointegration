@@ -5,6 +5,10 @@ Dickey, D. \harvardand\ Fuller, W.  \harvardyearleft 1981\harvardyearright ,
   `Likelihood ratio statistics for autoregressive time series with a unit
   root', {\em Econometrica} {\bf 49},~1057 -- 1072.
 
+\harvarditem{Enders}{2010}{EndersTS}
+Enders, W.  \harvardyearleft 2010\harvardyearright , {\em Applied Econometric
+  Time Series}, 3 edn, Wiley.
+
 \harvarditem{Engle \harvardand\ Granger}{1987}{EG1987}
 Engle, R.~F. \harvardand\ Granger, C.~W.  \harvardyearleft
   1987\harvardyearright , `Co-integration and error correction representaiton,
@@ -21,6 +25,11 @@ Kwiatkowski, D., Phillips, P. C.~B., Schmidt, P. \harvardand\ Shin, Y.
   stationarity against the alternative of a unit root: How sure are we that
   economic time series have a unit root?', {\em Journal of Econometrics} {\bf
   54},~159 -- 178.
+
+\harvarditem{MacKinnon}{1996}{MacKinnon1996}
+MacKinnon, J.~G.  \harvardyearleft 1996\harvardyearright , `Numerical
+  distribution functions for unit root and cointegration tests', {\em Journal
+  of Applied Econometrics} {\bf 11}(6),~601--618.
 
 \harvarditem{Pfaff}{2008}{varsb}
 Pfaff, B.  \harvardyearleft 2008\harvardyearright , {\em Analysis of Integrated

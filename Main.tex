@@ -216,7 +216,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 21:20:46 2013
+% Thu Jun 13 20:48:09 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -248,7 +248,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.co@teststat), lc.co@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 2"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 21:20:47 2013
+% Thu Jun 13 20:48:09 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -283,7 +283,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc2.ct@teststat), lc2.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 3"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 21:20:47 2013
+% Thu Jun 13 20:48:09 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -377,7 +377,7 @@ ab <- \hlfunctioncall{rbind}(a, b)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(ab, digits = 2, caption = \hlstring{"KPSS and critical values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 21:20:47 2013
+% Thu Jun 13 20:48:10 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrr}
@@ -459,7 +459,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg, caption = \hlstring{"Regresson results"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 21:20:47 2013
+% Thu Jun 13 20:48:10 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -578,7 +578,7 @@ ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.d
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(ecm.reg), caption = \hlstring{"Engle-Granger Regression Result"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 21:20:48 2013
+% Thu Jun 13 20:48:11 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -597,6 +597,13 @@ ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.d
 
 
 The results show that most of the disturbance from equilibrium is corrected swiftly with the coefficient on the lagged error at 0.97. 
+
+\subsection{Use of cointegration}
+These cointegration techniques can be used to test whether there is a stable relationship between variables.  For example, one test could be whether cash and futures prices are cointegrated.  A Dickey-Fuller test cannot be made of the residuals of a regression of cash on futures because the process of creating the residuals through the regression will bias the result by selecting parameters that reduce the variability of the estimated errors as much as possible.  Therefore, the Engle-Granger residuals should be used.  These are interpolations from the response surface in \citep{MacKinnon1996}.  These are in Table C \citep[p. 490]{EndersTS}.  
+
+If the tests indicate that the residuals from the regression are stationary, the coefficient from this regression gives the relationship between cash a futures. Similarly, the efficiecy of pairs trades can be assessed with the error-correction model. This also gives an indication of how swiftly the relationship will return to normal after a disturbance. 
+
+Other uses of the Engle-Granger approach would be the paris test of two securities that are believbedd to have a stable relationship, the yield curve etc. 
 
 \subsection{Johansen Procedure}
 When there are more than two series there may still be a relationship that creates a stationary, linear combination that can be used in a regresssion.  
@@ -653,7 +660,7 @@ a <- \hlfunctioncall{cbind}(jo.results@teststat, jo.results@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"Johansen Test and Critical Values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 10 21:20:48 2013
+% Thu Jun 13 20:48:11 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
