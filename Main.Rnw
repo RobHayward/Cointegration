@@ -1,6 +1,7 @@
 \documentclass{article}
 \usepackage{amsmath}
 \usepackage{natbib}
+\usepackage[hidelinks]{hyperref}
 \title{Cointegration}
 \author{Rob Hayward}
 \begin{document}
@@ -292,6 +293,93 @@ These cointegration techniques can be used to test whether there is a stable rel
 If the tests indicate that the residuals from the regression are stationary, the coefficient from this regression gives the relationship between cash a futures. Similarly, the efficiecy of pairs trades can be assessed with the error-correction model. This also gives an indication of how swiftly the relationship will return to normal after a disturbance. 
 
 This technique could also be used to make a pairs test of two securities.  The cointegration is the relationship between the two and the error correction can show the speed at which the relationship will return to the long run equilibrium.  Alternatively, an analysis of the bond market could use the yield curve (long term and short term interest rates) as a cointegrating factor.  
+
+\subsection{Example}
+This examples uses the artificial data from the Enders textbook \citep[pp. 377-379]{EndersTS}.  The simulated series are created in the following way.
+
+\begin{tabular}[l]{l | c | c | c}
+ &  $(y_t)$ & $(z_t)$ & $(w_t)$ \\
+ \hline
+ Trend & $\mu_{yt} = \mu_{yt} + \varepsilon_{zt}$ & $\mu_{zt} = \mu_{zt} + \varepsilon_{zt}$ & $\mu_{wt} = \mu_{yt} + \mu_{zt}$\\
+ Irregular & $\delta_{yt} = 0.5 \delta_{yt-1} + \eta_{yt}$ & $\delta_{zt} =0.5 \delta_{zt-1} + \eta_{zt}$ & $\delta_{wt} = 0.5 \delta_{wt-1} + \eta_{wt}$\\
+ Series & $y_t = \mu_{yt} +\delta_{yt}$ & $z_t = \mu_{zt} + \delta_{zt}$ & $w_t = \mu_{wt} + \delta_{wt} + 0.5 \delta_{yt} + 0.5 \delta_{zt}$
+ \end{tabular}
+ 
+The data are available on the \href{http://bcs.wiley.com/he-bcs/Books?action=resource&bcsId=5276&itemId=0470505397&resourceId=18503}{Enders companion web site}.  Load the data and plot.
+<<loaddata>>=
+da <- read.csv("coint6.csv", header = TRUE)
+head(da)
+@
+Plot data
+<<Plot4>>=
+plot(da$z, lty=1, ylab='', xlab='', type = 'l', 
+     main = "Plot of y, x and w", ylim = c(-10, 2))
+lines(da$w, lty=2)
+lines(da$y, lty = 3)
+legend("topright", legend=c('y', 'z', 'w'), 
+                          lty=c(1, 2, 3))
+@
+Now test whether the series are stationary using the augmented Dickey-Fuller test.  
+<<Reg, results = 'asis'>>=
+eq1 <- lm(da$y ~ da$z + da$w)
+print(xtable(summary(eq1), caption = 'Least Squares y on z and w'))
+@
+This can be repeated for each of the three possible relationships and the errors that are collected can be saved and tested for stationarity.
+<<res>>=
+resy <- eq1$residuals
+eq2 <- lm(da$z ~ da$y + da$w)
+resz <- eq2$residuals
+eq3 <- lm(da$w ~ da$z + da$y)
+resw <- eq3$residuals
+@
+The test is of the form.
+\begin{equation}
+\Delta y_t = \alpha_0 + \alpha_1 y_{t-1} + \sum_{i=1}^p \alpha_{i+1} \Delta y_{t-1} + \varepsilon_{t}
+\end{equation}
+
+<<EGrestest, echo=FALSE, results='asis', cache=TRUE>>=
+eq1 <- lm(y ~ z + w, data = da)
+resy <- eq1$residuals
+# embed will create the lag
+lresy <- embed(resy,2)     
+dresy <- diff(resy)
+dresyl4 <- embed(dresy, 5)
+resym <- cbind(lresy, dresy)
+resym2 <-cbind(resym[5:99,], dresyl4)
+eqresy <- lm(resym[,3] ~ 0 + resym[,2])
+eqresy2 <- lm(resym2[,3] ~ resym2[,2] + resym2[,5:8])
+M <-matrix(0, nrow = 6, ncol = 2)
+M[1:2,1] <- t(coefficients(summary(eqresy))[c(1,3)])
+M[1:2,2] <- t(coefficients(summary(eqresy2))[2,c(1,3)])
+
+eq2 <- lm(z ~ y + w, data = da)
+resz <- eq2$residuals
+# embed will create the lag
+lresz <- embed(resz,2)     
+dresz <- diff(resz)
+dreszl4 <- embed(dresz, 5)
+reszm <- cbind(lresz, dresz)
+reszm2 <-cbind(reszm[5:99,], dreszl4)
+eqresz <- lm(reszm[,3] ~ 0 + reszm[,2])
+eqresz2 <- lm(reszm2[,3] ~ reszm2[,2] + reszm2[,5:8])
+M[3:4,1] <- t(coefficients(summary(eqresz))[c(1,3)])
+M[3:4,2] <- t(coefficients(summary(eqresz2))[2,c(1,3)])
+eq3 <- lm(w ~ z + y, data = da)
+resw <- eq3$residuals
+# embed will create the lag
+lresw <- embed(resw,2)     
+dresw <- diff(resw)
+dreswl4 <- embed(dresw, 5)
+reswm <- cbind(lresw, dresw)
+reswm2 <-cbind(resym[5:99,], dreswl4)
+eqresw <- lm(reswm[,3] ~ 0 + reswm[,2])
+eqresw2 <- lm(reswm2[,3] ~ reswm2[,2] + reswm2[,5:8])
+M[5:6,1] <- t(coefficients(summary(eqresw))[c(1,3)])
+M[5:6,2] <- t(coefficients(summary(eqresw2))[2,c(1,3)])
+colnames(M) <-c("No Lags", "4 Lags")
+rownames(M) <-c("e_yt", "SE(y)", "e_zt", "SE(z)", "e_wt", "SE(w)" )
+print(xtable(M, caption = 'Estimated $a_1$'), digits = 4)
+@
 
 \subsection{Johansen Procedure}
 When there are more than two series there may still be a relationship that creates a stationary, linear combination that can be used in a regresssion.  
