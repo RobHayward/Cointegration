@@ -217,7 +217,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 15 08:39:23 2013
+% Mon Jun 17 21:33:44 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -249,7 +249,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.co@teststat), lc.co@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 2"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 15 08:39:23 2013
+% Mon Jun 17 21:33:44 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -284,7 +284,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc2.ct@teststat), lc2.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 3"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 15 08:39:23 2013
+% Mon Jun 17 21:33:44 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -378,7 +378,7 @@ ab <- \hlfunctioncall{rbind}(a, b)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(ab, digits = 2, caption = \hlstring{"KPSS and critical values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 15 08:39:23 2013
+% Mon Jun 17 21:33:45 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrr}
@@ -460,7 +460,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg, caption = \hlstring{"Regresson results"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 15 08:39:24 2013
+% Mon Jun 17 21:33:45 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -579,7 +579,7 @@ ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.d
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(ecm.reg), caption = \hlstring{"Engle-Granger Regression Result"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 15 08:39:24 2013
+% Mon Jun 17 21:33:46 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -658,7 +658,7 @@ eq1 <- \hlfunctioncall{lm}(da$y ~ da$z + da$w)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(eq1), caption = \hlstring{"Least Squares y on z and w"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 15 08:39:24 2013
+% Mon Jun 17 21:33:46 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -694,22 +694,48 @@ The test is of the form.
 \end{equation}
 
 % latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 15 08:39:25 2013
+% Mon Jun 17 21:10:36 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrr}
   \hline
  & No Lags & 4 Lags \\ 
   \hline
-e\_yt & -0.44 & -0.59 \\ 
-  SE(y) & -5.17 & -4.04 \\ 
-  e\_zt & -0.45 & -0.59 \\ 
-  SE(z) & -5.38 & -4.20 \\ 
-  e\_wt & -0.46 & -0.60 \\ 
-  SE(w) & -5.39 & -4.00 \\ 
+e\_yt & -0.4430 & -0.5953 \\ 
+  SE(y) & -5.1749 & -4.0742 \\ 
+  e\_zt & -0.4520 & -0.5934 \\ 
+  SE(z) & -5.3788 & -4.2268 \\ 
+  e\_wt & -0.4553 & -0.6071 \\ 
+  SE(w) & -5.3896 & -4.2248 \\ 
    \hline
 \end{tabular}
 \caption{Estimated $a_1$}
+\end{center}
+\end{table}
+
+
+The figures displayed here are the same as those in Table 6.2 of Enders \citep[p. 379]{EndersTS}.  The critical value comes from MacKinnon.  The programme does not appear to give as much flexibility as the talbes in Enders.  Sample code below. 
+\begin{kframe}
+\begin{alltt}
+\hlfunctioncall{xtable}(\hlfunctioncall{unitrootTable}(trend = \hlstring{"nc"}), digits = 4, caption = \hlstring{"MacKinnon unit root table"})
+\end{alltt}
+\end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
+% Mon Jun 17 21:33:46 2013
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{rrrrrrrrr}
+  \hline
+ & 0.010 & 0.025 & 0.050 & 0.100 & 0.900 & 0.950 & 0.975 & 0.990 \\ 
+  \hline
+ 25 & -2.6610 & -2.2720 & -1.9550 & -1.6090 & 0.9250 & 1.3370 & 1.7010 & 2.1390 \\ 
+   50 & -2.6120 & -2.2490 & -1.9480 & -1.6130 & 0.9060 & 1.3090 & 1.6600 & 2.0730 \\ 
+  100 & -2.5880 & -2.2380 & -1.9440 & -1.6150 & 0.8970 & 1.2960 & 1.6410 & 2.0430 \\ 
+  250 & -2.5740 & -2.2320 & -1.9420 & -1.6160 & 0.8910 & 1.2880 & 1.6300 & 2.0260 \\ 
+  500 & -2.5700 & -2.2290 & -1.9410 & -1.6160 & 0.8900 & 1.2860 & 1.6270 & 2.0210 \\ 
+  Inf & -2.5650 & -2.2270 & -1.9410 & -1.6170 & 0.8880 & 1.2840 & 1.6240 & 2.0150 \\ 
+   \hline
+\end{tabular}
+\caption{MacKinnon unit root table}
 \end{center}
 \end{table}
 
@@ -770,7 +796,7 @@ a <- \hlfunctioncall{cbind}(jo.results@teststat, jo.results@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"Johansen Test and Critical Values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Sat Jun 15 08:39:25 2013
+% Mon Jun 17 21:33:46 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}

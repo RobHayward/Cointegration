@@ -7,7 +7,31 @@ lines(da$z, lty=2)
 lines(da$w, lty = 3)
 legend('bottomleft', legend=c('y', 'z', 'w'), 
             lty=c(1, 2, 3))
-# Engle-Granger and test of residuals
+# Engle-Granger and test of residuals (using ur.df)--------------
+require(urca)
+eq1 <- lm(y ~ z + w, data = da)
+resy <- eq1$residuals
+eq2 <- lm(z ~ y + w, data = da)
+resz <- eq2$residuals
+eq3 <- lm(w ~ z + y, data = da)
+resw <- eq3$residuals
+y0 <- ur.df(resy, type = "none", lags = 0)
+z0 <- ur.df(resz, type = "none", lags = 0)
+w0 <- ur.df(resw, type = "none", lags = 0)
+y4 <- ur.df(resy, type = "none", lags = 4)
+z4 <- ur.df(resz, type = "none", lags = 4)
+w4 <- ur.df(resw, type = "none", lags = 4)
+M <-matrix(0, nrow = 6, ncol = 2)
+M[1:2,1] <- t(coefficients(y0@testreg)[1,c(1,3)])
+M[3:4,1] <- t(coefficients(z0@testreg)[1,c(1,3)])
+M[5:6,1] <- t(coefficients(w0@testreg)[1,c(1,3)])
+M[1:2,2] <- t(coefficients(y4@testreg)[1,c(1,3)])
+M[3:4,2] <- t(coefficients(z4@testreg)[1,c(1,3)])
+M[5:6,2] <- t(coefficients(w4@testreg)[1,c(1,3)])
+M
+punitroot(-3.828, N = 100, trend = "ct", statistic = 'n')
+unitrootTable(trend = "c")
+# Engle-Granger and test of residuals-----------------
 eq1 <- lm(y ~ z + w, data = da)
 resy <- eq1$residuals
 # embed will create the lag

@@ -340,45 +340,30 @@ The test is of the form.
 <<EGrestest, echo=FALSE, results='asis', cache=TRUE>>=
 eq1 <- lm(y ~ z + w, data = da)
 resy <- eq1$residuals
-# embed will create the lag
-lresy <- embed(resy,2)     
-dresy <- diff(resy)
-dresyl4 <- embed(dresy, 5)
-resym <- cbind(lresy, dresy)
-resym2 <-cbind(resym[5:99,], dresyl4)
-eqresy <- lm(resym[,3] ~ 0 + resym[,2])
-eqresy2 <- lm(resym2[,3] ~ resym2[,2] + resym2[,5:8])
-M <-matrix(0, nrow = 6, ncol = 2)
-M[1:2,1] <- t(coefficients(summary(eqresy))[c(1,3)])
-M[1:2,2] <- t(coefficients(summary(eqresy2))[2,c(1,3)])
-
 eq2 <- lm(z ~ y + w, data = da)
 resz <- eq2$residuals
-# embed will create the lag
-lresz <- embed(resz,2)     
-dresz <- diff(resz)
-dreszl4 <- embed(dresz, 5)
-reszm <- cbind(lresz, dresz)
-reszm2 <-cbind(reszm[5:99,], dreszl4)
-eqresz <- lm(reszm[,3] ~ 0 + reszm[,2])
-eqresz2 <- lm(reszm2[,3] ~ reszm2[,2] + reszm2[,5:8])
-M[3:4,1] <- t(coefficients(summary(eqresz))[c(1,3)])
-M[3:4,2] <- t(coefficients(summary(eqresz2))[2,c(1,3)])
 eq3 <- lm(w ~ z + y, data = da)
 resw <- eq3$residuals
-# embed will create the lag
-lresw <- embed(resw,2)     
-dresw <- diff(resw)
-dreswl4 <- embed(dresw, 5)
-reswm <- cbind(lresw, dresw)
-reswm2 <-cbind(resym[5:99,], dreswl4)
-eqresw <- lm(reswm[,3] ~ 0 + reswm[,2])
-eqresw2 <- lm(reswm2[,3] ~ reswm2[,2] + reswm2[,5:8])
-M[5:6,1] <- t(coefficients(summary(eqresw))[c(1,3)])
-M[5:6,2] <- t(coefficients(summary(eqresw2))[2,c(1,3)])
+y0 <- ur.df(resy, type = "none", lags = 0)
+z0 <- ur.df(resz, type = "none", lags = 0)
+w0 <- ur.df(resw, type = "none", lags = 0)
+y4 <- ur.df(resy, type = "none", lags = 4)
+z4 <- ur.df(resz, type = "none", lags = 4)
+w4 <- ur.df(resw, type = "none", lags = 4)
+M <-matrix(0, nrow = 6, ncol = 2)
+M[1:2,1] <- t(coefficients(y0@testreg)[1,c(1,3)])
+M[3:4,1] <- t(coefficients(z0@testreg)[1,c(1,3)])
+M[5:6,1] <- t(coefficients(w0@testreg)[1,c(1,3)])
+M[1:2,2] <- t(coefficients(y4@testreg)[1,c(1,3)])
+M[3:4,2] <- t(coefficients(z4@testreg)[1,c(1,3)])
+M[5:6,2] <- t(coefficients(w4@testreg)[1,c(1,3)])
 colnames(M) <-c("No Lags", "4 Lags")
 rownames(M) <-c("e_yt", "SE(y)", "e_zt", "SE(z)", "e_wt", "SE(w)" )
-print(xtable(M, caption = 'Estimated $a_1$'), digits = 4)
+print(xtable(M, caption = 'Estimated $a_1$', digits = 4))
+@
+The figures displayed here are the same as those in Table 6.2 of Enders \citep[p. 379]{EndersTS}.  The critical value comes from MacKinnon.  The programme does not appear to give as much flexibility as the talbes in Enders.  Sample code below. 
+<<MacKinnon, results='asis'>>=
+xtable(unitrootTable(trend = "nc"), digits = 4, caption = 'MacKinnon unit root table')
 @
 
 \subsection{Johansen Procedure}
