@@ -210,14 +210,20 @@ lc.co <- \hlfunctioncall{ur.df}(lc, lags = 3, type = \hlstring{"drift"})
 
 The three different equations are tested by 'trend', 'drift' or 'none' and there are two tests that take place. 
 
-The first $(\tau_3)$ tests whether $\pi$ is equal to zero.  The test is the usual t-value on the lagged dependent variable. This can seen in the summary() function or the SlotName "teststat".  The critical values for the test statistics are in the slotName "cval".  The following code extracts the relevant values and puts them into a table. 
+The first $(\tau_3)$ tests whether $\pi$ is equal to zero.  The test is the usual t-value on the lagged dependent variable. This can seen in the summary() function or the SlotName "teststat".  The critical values for the test statistics are in the slotName "cval".  
+
+\begin{equation}
+\Delta y_t = \beta_0 + \beta_1 t + \pi y_{t-1} + \sum_{j=1}^k \gamma_j \delta y_{t-j}
+\end{equation}
+
+The following code extracts the relevant values and puts them into a table. 
 \begin{kframe}
 \begin{alltt}
 a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 17 21:33:44 2013
+% Thu Jun 20 20:59:18 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -242,14 +248,19 @@ The critical value for a sample size of 100 comes from \citep{Fuller1976}.
 
 An F-test of the null hypothesis that the coefficients on the lagged change in the dependend variable and the coefficient on the time trend are jointly equal to zero is also supplied $(\phi_3)$.  The critical values come from Table VI \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (\alpha, 0, 1)$.  It seems that unit root and lack of time trend cannot be rejected. A joint test of the null that the coefficients on the drift, time trend and lagged difference of the dependent variable is suppoed in $(\phi_2)$.  The critical values come from Table V \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (0, 0, 1)$.
 
+
 As the consumption series does not appear to be trend stationary, a test without the trend can be carried out.  This is equivalent to setting $\beta_2$ in Equation \ref{eq:gen} to zero. lc.co is the test of the series with drift.  
+
+The F-Test is of the hypothesis $(\beta_1, \beta_2, \pi) = (\beta_1, 0, 0)$. It is conducted by imposing restrictions on the equation and assesses whether these restrictions have a significant effect on the residuals.  The nulll hypothesis is that the restrictions hold.  
+
+
 \begin{kframe}
 \begin{alltt}
 a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.co@teststat), lc.co@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 2"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 17 21:33:44 2013
+% Thu Jun 20 20:59:18 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -284,7 +295,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc2.ct@teststat), lc2.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 3"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 17 21:33:44 2013
+% Thu Jun 20 20:59:18 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -378,7 +389,7 @@ ab <- \hlfunctioncall{rbind}(a, b)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(ab, digits = 2, caption = \hlstring{"KPSS and critical values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 17 21:33:45 2013
+% Thu Jun 20 20:59:18 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrr}
@@ -460,7 +471,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg, caption = \hlstring{"Regresson results"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 17 21:33:45 2013
+% Thu Jun 20 20:59:19 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -579,7 +590,7 @@ ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.d
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(ecm.reg), caption = \hlstring{"Engle-Granger Regression Result"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 17 21:33:46 2013
+% Thu Jun 20 20:59:19 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -658,7 +669,7 @@ eq1 <- \hlfunctioncall{lm}(da$y ~ da$z + da$w)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(eq1), caption = \hlstring{"Least Squares y on z and w"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 17 21:33:46 2013
+% Thu Jun 20 20:59:20 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -720,7 +731,7 @@ The figures displayed here are the same as those in Table 6.2 of Enders \citep[p
 \hlfunctioncall{xtable}(\hlfunctioncall{unitrootTable}(trend = \hlstring{"nc"}), digits = 4, caption = \hlstring{"MacKinnon unit root table"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 17 21:33:46 2013
+% Thu Jun 20 20:59:20 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrrrrr}
@@ -796,7 +807,7 @@ a <- \hlfunctioncall{cbind}(jo.results@teststat, jo.results@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"Johansen Test and Critical Values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Mon Jun 17 21:33:46 2013
+% Thu Jun 20 20:59:20 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}

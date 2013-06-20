@@ -105,7 +105,13 @@ lc.co <- ur.df(lc, lags=3, type='drift')
 @
 The three different equations are tested by 'trend', 'drift' or 'none' and there are two tests that take place. 
 
-The first $(\tau_3)$ tests whether $\pi$ is equal to zero.  The test is the usual t-value on the lagged dependent variable. This can seen in the summary() function or the SlotName "teststat".  The critical values for the test statistics are in the slotName "cval".  The following code extracts the relevant values and puts them into a table. 
+The first $(\tau_3)$ tests whether $\pi$ is equal to zero.  The test is the usual t-value on the lagged dependent variable. This can seen in the summary() function or the SlotName "teststat".  The critical values for the test statistics are in the slotName "cval".  
+
+\begin{equation}
+\Delta y_t = \beta_0 + \beta_1 t + \pi y_{t-1} + \sum_{j=1}^k \gamma_j \delta y_{t-j}
+\end{equation}
+
+The following code extracts the relevant values and puts them into a table. 
 <<table, results='asis'>>=
 a <- cbind(t(lc.ct@teststat), lc.ct@cval)
 print(xtable(a, digits = 2, caption = "DW and F-tests"))
@@ -118,7 +124,12 @@ The critical value for a sample size of 100 comes from \citep{Fuller1976}.
 
 An F-test of the null hypothesis that the coefficients on the lagged change in the dependend variable and the coefficient on the time trend are jointly equal to zero is also supplied $(\phi_3)$.  The critical values come from Table VI \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (\alpha, 0, 1)$.  It seems that unit root and lack of time trend cannot be rejected. A joint test of the null that the coefficients on the drift, time trend and lagged difference of the dependent variable is suppoed in $(\phi_2)$.  The critical values come from Table V \citep{DF1981} testing the null $(\alpha, \beta, \rho) = (0, 0, 1)$.
 
+
 As the consumption series does not appear to be trend stationary, a test without the trend can be carried out.  This is equivalent to setting $\beta_2$ in Equation \ref{eq:gen} to zero. lc.co is the test of the series with drift.  
+
+The F-Test is of the hypothesis $(\beta_1, \beta_2, \pi) = (\beta_1, 0, 0)$. It is conducted by imposing restrictions on the equation and assesses whether these restrictions have a significant effect on the residuals.  The nulll hypothesis is that the restrictions hold.  
+
+
 <<table2, results='asis'>>=
 a <- cbind(t(lc.co@teststat), lc.co@cval)
 print(xtable(a, digits = 2, caption = "DW and F-tests 2"))
