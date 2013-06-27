@@ -29,7 +29,7 @@ and \emph{difference stationary} processes.
 y_t = y_{t-1} + \varepsilon = y_0 + \sum_{i=0}^t \varepsilon_t
 \end{equation}
 
-If all the roots of the autoregressive polynominal $\phi_p(z)$ lie outside the unit circle, the process is stationary (possibly trend stationary); if at least one of the roots lies on the unit circle and there is a unit root and then the process is difference statonary. 
+If all the roots of the \emph{characteristic function}\footnote{This is of the form $\Pi(z) = \Pi_1(z) - \Pi_2(z)^2 - ... - \Pi_n(z)^n$} lie outside the unit circle or all the eigene roots of the \emph{companion function}\footnote{This takes the form $\mathbf{x_t} = \mathbf{\Pi x_{t-1}} + \mathbf{e_t}$} lie within the unit circle, the process is stationary; if at least one of the roots lies on the unit circle and there is a unit root and then the process is difference statonary. 
 
 \begin{equation}
 \phi_p(z) = 1 - \phi_1 (z) - \phi_2(z)^2 - \phi_3(z)^3...\phi_p(z)^p

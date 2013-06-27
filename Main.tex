@@ -84,7 +84,7 @@ and \emph{difference stationary} processes.
 y_t = y_{t-1} + \varepsilon = y_0 + \sum_{i=0}^t \varepsilon_t
 \end{equation}
 
-If all the roots of the autoregressive polynominal $\phi_p(z)$ lie outside the unit circle, the process is stationary (possibly trend stationary); if at least one of the roots lies on the unit circle and there is a unit root and then the process is difference statonary. 
+If all the roots of the \emph{characteristic function}\footnote{This is of the form $\Pi(z) = \Pi_1(z) - \Pi_2(z)^2 - ... - \Pi_n(z)^n$} lie outside the unit circle or all the eigene roots of the \emph{companion function}\footnote{This takes the form $\mathbf{x_t} = \mathbf{\Pi x_{t-1}} + \mathbf{e_t}$} lie within the unit circle, the process is stationary; if at least one of the roots lies on the unit circle and there is a unit root and then the process is difference statonary. 
 
 \begin{equation}
 \phi_p(z) = 1 - \phi_1 (z) - \phi_2(z)^2 - \phi_3(z)^3...\phi_p(z)^p
@@ -223,7 +223,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.ct@teststat), lc.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 20 20:59:18 2013
+% Wed Jun 26 17:59:39 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -260,7 +260,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc.co@teststat), lc.co@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 2"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 20 20:59:18 2013
+% Wed Jun 26 17:59:39 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -295,7 +295,7 @@ a <- \hlfunctioncall{cbind}(\hlfunctioncall{t}(lc2.ct@teststat), lc2.ct@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"DW and F-tests 3"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 20 20:59:18 2013
+% Wed Jun 26 17:59:39 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -389,7 +389,7 @@ ab <- \hlfunctioncall{rbind}(a, b)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(ab, digits = 2, caption = \hlstring{"KPSS and critical values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 20 20:59:18 2013
+% Wed Jun 26 17:59:39 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrr}
@@ -438,6 +438,10 @@ This is the overview of conintegration and the methods use to analyse conintegra
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlfunctioncall{library}(lmtest)
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'lmtest' was built under R version 2.15.3}}\begin{alltt}
 \hlfunctioncall{library}(xtable)
 \hlfunctioncall{set.seed}(123456)
 e1 <- \hlfunctioncall{rnorm}(500)
@@ -471,7 +475,7 @@ sr.reg <- \hlfunctioncall{lm}(y1 ~ y2)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(sr.reg, caption = \hlstring{"Regresson results"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 20 20:59:19 2013
+% Wed Jun 26 17:59:40 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -590,7 +594,7 @@ ecm.reg <- \hlfunctioncall{lm}(dy2 ~ error.lagged + dy1.1 + dy2.1, data = diff.d
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(ecm.reg), caption = \hlstring{"Engle-Granger Regression Result"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 20 20:59:19 2013
+% Wed Jun 26 17:59:41 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -669,7 +673,7 @@ eq1 <- \hlfunctioncall{lm}(da$y ~ da$z + da$w)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(\hlfunctioncall{summary}(eq1), caption = \hlstring{"Least Squares y on z and w"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 20 20:59:20 2013
+% Wed Jun 26 17:59:41 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
@@ -731,7 +735,7 @@ The figures displayed here are the same as those in Table 6.2 of Enders \citep[p
 \hlfunctioncall{xtable}(\hlfunctioncall{unitrootTable}(trend = \hlstring{"nc"}), digits = 4, caption = \hlstring{"MacKinnon unit root table"})
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 20 20:59:20 2013
+% Wed Jun 26 17:59:41 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrrrrrr}
@@ -807,7 +811,7 @@ a <- \hlfunctioncall{cbind}(jo.results@teststat, jo.results@cval)
 \hlfunctioncall{print}(\hlfunctioncall{xtable}(a, digits = 2, caption = \hlstring{"Johansen Test and Critical Values"}))
 \end{alltt}
 \end{kframe}% latex table generated in R 2.15.2 by xtable 1.7-0 package
-% Thu Jun 20 20:59:20 2013
+% Wed Jun 26 17:59:41 2013
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
